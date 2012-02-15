@@ -1,0 +1,13 @@
+TinyMount is a little GUI tool for mount/umount devices, using UDisks.
+
+Main features are:
+
+ - Tray icon with menu to see currently connected devices.
+ - Notifications about connected/disconnected divices.
+ - Mounting/unmounting by one click.
+
+TinyMount is inspired by internal KDE mounter, but has no dependencies on
+KDE libs (but it Qt based, sorry) and can be used with lightweight 
+windowmanagers like awesome, *boxes etc with internal tray support, or
+with separate tray applications (like stalonetray) if your manager doesn't
+support tray.
