@@ -1,14 +1,11 @@
 #include "tinymounttray.h"
-#include "udisks/udisksinterface.h"
+#include "diskmanager.h"
 
 #include <QSystemTrayIcon>
 #include <QIcon>
 #include <QtDebug>
 #include <QMenu>
 #include <QApplication>
-
-static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
-static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
 
 TinyMountTray::TinyMountTray(QObject *parent) :
     QObject(parent)
@@ -18,31 +15,34 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     // HACK!!! always hicolor on my PC
     QIcon::setThemeName("oxygen");
 
-    udisks = new UDisksInterface(UDISKS_SERVICE,
-                                 UDISKS_PATH,
-                                 QDBusConnection::systemBus(),
-                                 this);
+    manager = new DiskManager(this);
+    connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
+    connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
 
-    connect(udisks, SIGNAL(DeviceAdded(QDBusObjectPath)), this, SLOT(onDeviceAdded(QDBusObjectPath)));
+    trayMenu = new QMenu();
+
+    foreach (const DeviceInfo* d, manager->devices())
+    {
+        trayMenu->addAction(d->name);
+    }
+
+    trayMenu->addSeparator();
+    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
 
     tray = new QSystemTrayIcon(this);
     tray->setIcon(QIcon::fromTheme("drive-removable-media"));
     tray->show();
-
-    trayMenu = new QMenu();
-    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
-
     tray->setContextMenu(trayMenu);
 }
 
-void TinyMountTray::onDeviceAdded(const QDBusObjectPath &path)
+void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
-    qDebug() << "Device added:" << path.path();
-    tray->showMessage(tr("Device is added"), path.path());
+    qDebug() << "Device added:" << device.name;
+    tray->showMessage(tr("Device is added"), device.name);
 }
 
-void TinyMountTray::onDeviceRemoved(const QDBusObjectPath &path)
+void TinyMountTray::onDeviceRemoved(const DeviceInfo &device)
 {
-    qDebug() << "Device removed:" << path.path();
-    tray->showMessage(tr("Device is removed"), path.path());
+    qDebug() << "Device removed:" << device.name;
+    tray->showMessage(tr("Device is removed"), device.name);
 }

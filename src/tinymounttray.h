@@ -5,8 +5,8 @@
 
 class QSystemTrayIcon;
 class QMenu;
-class UDisksInterface;
-class QDBusObjectPath;
+class DeviceInfo;
+class DiskManager;
 
 class TinyMountTray : public QObject
 {
@@ -16,16 +16,14 @@ public:
 
 signals:
 
-public slots:
-
 private slots:
-    void onDeviceAdded(const QDBusObjectPath& path);
-    void onDeviceRemoved(const QDBusObjectPath& path);
+    void onDeviceAdded(const DeviceInfo& device);
+    void onDeviceRemoved(const DeviceInfo& device);
 
 private:
     QSystemTrayIcon* tray;
     QMenu* trayMenu;
-    UDisksInterface* udisks;
+    DiskManager* manager;
 };
 
 #endif // TINYMOUNTTRAY_H
