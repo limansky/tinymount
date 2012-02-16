@@ -31,9 +31,6 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 {
     qDebug() << "Creating UI";
 
-    // HACK!!! always hicolor on my PC
-    QIcon::setThemeName("oxygen");
-
     manager = new DiskManager(this);
     connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
     connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
@@ -48,8 +45,7 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     trayMenu->addSeparator();
     trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
 
-    tray = new QSystemTrayIcon(this);
-    tray->setIcon(QIcon::fromTheme("drive-removable-media"));
+    tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
     tray->show();
     tray->setContextMenu(trayMenu);
 }

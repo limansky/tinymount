@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QSystemTrayIcon>
+#include <QFile>
 
 #include "tinymounttray.h"
 
@@ -31,6 +32,7 @@ int main(int argc, char** argv)
         qFatal("No system tray available");
     }
 
+    QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
     TinyMountTray tmt;
 
     return app.exec();

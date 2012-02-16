@@ -22,18 +22,19 @@ TARGET = tinymount
 DEPENDPATH += .
 INCLUDEPATH += .
 
+CONFIG += debug
+
 QT += dbus
 
 # Input
-SOURCES += main.cpp \
+SOURCES = main.cpp \
     diskmanager.cpp \
     tinymounttray.cpp
 
-HEADERS += udisks/udisksinterface.h \
-    diskmanager.h \
+HEADERS = diskmanager.h \
     tinymounttray.h
+
+HEADERS += udisks/udisksinterface.h
 SOURCES += udisks/udisksinterface.cpp
 
-
-
-
+RESOURCES += tinymount.qrc
