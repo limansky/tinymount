@@ -27,14 +27,21 @@ CONFIG += debug
 QT += dbus
 
 # Input
-SOURCES = main.cpp \
+SOURCES = \
+    main.cpp \
     diskmanager.cpp \
     tinymounttray.cpp
 
-HEADERS = diskmanager.h \
+HEADERS = \
+    diskmanager.h \
     tinymounttray.h
 
-HEADERS += udisks/udisksinterface.h
-SOURCES += udisks/udisksinterface.cpp
+HEADERS += \
+    udisks/udisksinterface.h \
+    udisks/udisksdeviceinterface.h
+
+SOURCES += \
+    udisks/udisksinterface.cpp \
+    udisks/udisksdeviceinterface.cpp
 
 RESOURCES += tinymount.qrc

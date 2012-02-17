@@ -19,9 +19,26 @@
 
 #include "diskmanager.h"
 #include "udisks/udisksinterface.h"
+#include "udisks/udisksdeviceinterface.h"
 
 static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
+
+namespace {
+    QString formatFileSize(qulonglong size)
+    {
+        static const QStringList units = QStringList()
+                << "B" << "KB" << "MB" << "GB" << "TB";
+        int i = 0;
+        while (size > 1024 && i < units.size())
+        {
+            size /= 1024;
+            i++;
+        }
+
+        return QString::number(size) + " " + units[i];
+    }
+}
 
 DiskManager::DiskManager(QObject *parent) :
     QObject(parent)
@@ -32,7 +49,7 @@ DiskManager::DiskManager(QObject *parent) :
                                  this);
 
     connect(udisks, SIGNAL(DeviceAdded(QDBusObjectPath)), this, SLOT(onDeviceAdded(QDBusObjectPath)));
-
+    connect(udisks, SIGNAL(DeviceRemoved(QDBusObjectPath)), this, SLOT(onDeviceRemoved(QDBusObjectPath)));
 
     QDBusPendingReply<QList<QDBusObjectPath> > devs =  udisks->EnumerateDevices();
 
@@ -50,11 +67,38 @@ DiskManager::DiskManager(QObject *parent) :
 
 DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
 {
-    DeviceInfo* d = new DeviceInfo;
+    qDebug() << "DiskManager::deviceForPath" << path.path();
 
-    d->name = path.path();
-    d->type = DeviceInfo::Other;
-    d->mounted = false;
+    UDisksDeviceInterface dev(UDISKS_SERVICE, path.path(), QDBusConnection::systemBus());
+
+    qDebug() << dev.nativePath();
+    qDebug() << "\tsize =" << dev.deviceSize();
+    qDebug() << "\tisDrive =" << dev.deviceIsDrive();
+    qDebug() << "\tisVolume =" << dev.deviceIsPartition();
+    qDebug() << "\tisRemovable =" << dev.deviceIsRemovable();
+    qDebug() << "\tisMounted =" << dev.deviceIsMounted();
+    qDebug() << "\tisOptical =" << dev.deviceIsOpticalDisc();
+    qDebug() << "\tisSysInt =" << dev.deviceIsSystemInternal();
+    qDebug() << "\ttype and usage =" << dev.idType() << dev.idUsage();
+    qDebug() << "\tLabal =" << dev.idLabel();
+    qDebug() << "\tplabel =" << dev.partitionLabel();
+    qDebug() << "\tdpname =" << dev.devicePresentationName() << ", " << dev.devicePresentationIconName();
+    qDebug() << "\tcompatibility" << dev.driveMediaCompatibility();
+
+
+    DeviceInfo* d = 0;
+
+    if (dev.deviceIsPartition())
+    {
+        d = new DeviceInfo;
+
+        const QString& label = dev.idLabel();
+        const QString& fn = dev.deviceFile();
+        d->name = (label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label)
+                + " " + formatFileSize(dev.deviceSize());
+        d->type = DeviceInfo::Other;
+        d->mounted = dev.deviceIsMounted();
+    }
 
     return d;
 }

@@ -247,7 +247,7 @@ Q_SIGNALS: // SIGNALS
 
 namespace org {
   namespace freedesktop {
-    typedef ::UDisksInterface UDisks;
+    typedef ::UDisksInterface UDisksI;
   }
 }
 #endif

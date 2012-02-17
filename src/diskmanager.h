@@ -30,10 +30,10 @@ struct DeviceInfo
 {
     enum DeviceType
     {
-        HardDisk,
+        HDD,
         CD,
         Floppy,
-        SD,
+        Flash,
         Other
     };
 
