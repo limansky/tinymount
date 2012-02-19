@@ -60,6 +60,7 @@ signals:
 private slots:
     void onDeviceAdded(const QDBusObjectPath& path);
     void onDeviceRemoved(const QDBusObjectPath& path);
+    void onDeviceChanged(const QDBusObjectPath& path);
 
 private:
     DeviceInfo* deviceForPath(const QDBusObjectPath& path);

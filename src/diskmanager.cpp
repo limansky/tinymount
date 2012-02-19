@@ -30,13 +30,27 @@ namespace {
         static const QStringList units = QStringList()
                 << "B" << "KB" << "MB" << "GB" << "TB";
         int i = 0;
-        while (size > 1024 && i < units.size())
+        double sizeD = size;
+        while (sizeD > 1024 && i < units.size())
         {
-            size /= 1024;
+            sizeD /= 1024;
             i++;
         }
 
-        return QString::number(size) + " " + units[i];
+        return QString::number(sizeD, 'f', 2) + " " + units[i];
+    }
+
+    bool containsFlashTypes(const QStringList& compatibility)
+    {
+        foreach (const QString& c, compatibility)
+        {
+            if (c.startsWith("flash"))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -50,6 +64,7 @@ DiskManager::DiskManager(QObject *parent) :
 
     connect(udisks, SIGNAL(DeviceAdded(QDBusObjectPath)), this, SLOT(onDeviceAdded(QDBusObjectPath)));
     connect(udisks, SIGNAL(DeviceRemoved(QDBusObjectPath)), this, SLOT(onDeviceRemoved(QDBusObjectPath)));
+    connect(udisks, SIGNAL(DeviceChanged(QDBusObjectPath)), this, SLOT(onDeviceChanged(QDBusObjectPath)));
 
     QDBusPendingReply<QList<QDBusObjectPath> > devs =  udisks->EnumerateDevices();
 
@@ -75,6 +90,7 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << "\tsize =" << dev.deviceSize();
     qDebug() << "\tisDrive =" << dev.deviceIsDrive();
     qDebug() << "\tisVolume =" << dev.deviceIsPartition();
+    qDebug() << "\tisParttable =" << dev.deviceIsPartitionTable();
     qDebug() << "\tisRemovable =" << dev.deviceIsRemovable();
     qDebug() << "\tisMounted =" << dev.deviceIsMounted();
     qDebug() << "\tisOptical =" << dev.deviceIsOpticalDisc();
@@ -88,7 +104,9 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     DeviceInfo* d = 0;
 
-    if (dev.deviceIsPartition())
+    if (dev.deviceIsPartition()
+        && dev.partitionType() != "0x05" // extended partition.
+       )
     {
         d = new DeviceInfo;
 
@@ -96,7 +114,11 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
         const QString& fn = dev.deviceFile();
         d->name = (label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label)
                 + " " + formatFileSize(dev.deviceSize());
-        d->type = DeviceInfo::Other;
+        d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
+                  dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
+                  dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
+                  containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
+                                                                      DeviceInfo::Other;
         d->mounted = dev.deviceIsMounted();
     }
 
@@ -119,5 +141,25 @@ void DiskManager::onDeviceAdded(const QDBusObjectPath &path)
 void DiskManager::onDeviceRemoved(const QDBusObjectPath &path)
 {
     qDebug() << "Device removed:" << path.path();
+
+    delete deviceCache.value(path.path());
     deviceCache.remove(path.path());
+}
+
+void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
+{
+    qDebug() << "Device changed:" << path.path();
+
+    DeviceInfo* d = deviceForPath(path);
+
+    if (0 != d)
+    {
+        delete deviceCache.value(path.path());
+        deviceCache.insert(path.path(), d);
+    }
+    else
+    {
+        delete deviceCache.value(path.path());
+        deviceCache.remove(path.path());
+    }
 }
