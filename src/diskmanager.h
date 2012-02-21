@@ -38,6 +38,8 @@ struct DeviceInfo
     };
 
     QString name;
+    qulonglong size;
+    QString fileSystem;
     DeviceType type;
     bool mounted;
 };

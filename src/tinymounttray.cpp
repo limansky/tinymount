@@ -26,6 +26,41 @@
 #include <QMenu>
 #include <QApplication>
 
+namespace {
+    QIcon iconForType (DeviceInfo::DeviceType type)
+    {
+        switch (type)
+        {
+        case DeviceInfo::CD:
+            return QIcon::fromTheme("media-optical");
+        case DeviceInfo::Flash:
+        case DeviceInfo::Other:
+            return QIcon::fromTheme("media-flash");
+        case DeviceInfo::Floppy:
+            return QIcon::fromTheme("media-floppy");
+        case DeviceInfo::HDD:
+            return QIcon::fromTheme("drive-harddisk");
+        }
+
+        return QIcon();
+    }
+
+    QString formatFileSize(qulonglong size)
+    {
+        static const QStringList units = QStringList()
+                << "B" << "KB" << "MB" << "GB" << "TB";
+        int i = 0;
+        double sizeD = size;
+        while (sizeD > 1024 && i < units.size())
+        {
+            sizeD /= 1024;
+            i++;
+        }
+
+        return QString::number(sizeD, 'f', 2) + " " + units[i];
+    }
+}
+
 TinyMountTray::TinyMountTray(QObject *parent) :
     QObject(parent)
 {
@@ -39,7 +74,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 
     foreach (const DeviceInfo* d, manager->devices())
     {
-        trayMenu->addAction(d->name);
+        trayMenu->addAction(iconForType(d->type),
+                            QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)));
     }
 
     trayMenu->addSeparator();

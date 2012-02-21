@@ -25,21 +25,6 @@ static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
 
 namespace {
-    QString formatFileSize(qulonglong size)
-    {
-        static const QStringList units = QStringList()
-                << "B" << "KB" << "MB" << "GB" << "TB";
-        int i = 0;
-        double sizeD = size;
-        while (sizeD > 1024 && i < units.size())
-        {
-            sizeD /= 1024;
-            i++;
-        }
-
-        return QString::number(sizeD, 'f', 2) + " " + units[i];
-    }
-
     bool containsFlashTypes(const QStringList& compatibility)
     {
         foreach (const QString& c, compatibility)
@@ -101,7 +86,6 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << "\tdpname =" << dev.devicePresentationName() << ", " << dev.devicePresentationIconName();
     qDebug() << "\tcompatibility" << dev.driveMediaCompatibility();
 
-
     DeviceInfo* d = 0;
 
     if (dev.deviceIsPartition()
@@ -112,8 +96,9 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
 
         const QString& label = dev.idLabel();
         const QString& fn = dev.deviceFile();
-        d->name = (label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label)
-                + " " + formatFileSize(dev.deviceSize());
+        d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
+        d->size = dev.deviceSize();
+        d->fileSystem = dev.idType();
         d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
                   dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
                   dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
