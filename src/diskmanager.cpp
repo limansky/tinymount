@@ -90,10 +90,12 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     if (dev.deviceIsPartition()
         && dev.partitionType() != "0x05" // extended partition.
+        && dev.idType() != "swap"        // skip swap
        )
     {
         d = new DeviceInfo;
 
+        d->udisksPath = path.path();
         const QString& label = dev.idLabel();
         const QString& fn = dev.deviceFile();
         d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
@@ -147,4 +149,44 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
         delete deviceCache.value(path.path());
         deviceCache.remove(path.path());
     }
+}
+
+bool DiskManager::mountDevice(const QString& path)
+{
+    qDebug() << "mountDevice:" << path;
+    DeviceMap::iterator it = deviceCache.find(path);
+
+    if (it == deviceCache.end())
+    {
+        qWarning() << "Unknown device passed. Path = " << path;
+        return false;
+    }
+
+    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
+
+    QDBusPendingReply<QString> r = dev.FilesystemMount("", QStringList());
+
+    r.waitForFinished();
+
+    qDebug() << r.value();
+    return r.isValid();
+}
+
+bool DiskManager::unmountDevice(const QString& path)
+{
+    qDebug() << "unmountDevice:" << path;
+    DeviceMap::iterator it = deviceCache.find(path);
+
+    if (it == deviceCache.end())
+    {
+        qWarning() << "Unknown device passed. Path = " << path;
+        return false;
+    }
+
+    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
+
+    QDBusPendingReply<> r = dev.FilesystemUnmount(QStringList());
+
+    r.waitForFinished();
+    return r.isValid();
 }

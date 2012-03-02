@@ -33,7 +33,8 @@ class TinyMountTray : public QObject
 public:
     explicit TinyMountTray(QObject *parent = 0);
 
-signals:
+private:
+    void updateMenu();
 
 private slots:
     void onDeviceAdded(const DeviceInfo& device);
@@ -43,6 +44,42 @@ private:
     QSystemTrayIcon* tray;
     QMenu* trayMenu;
     DiskManager* manager;
+};
+
+class EventHandler : public QObject
+{
+    Q_OBJECT
+public:
+    EventHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
+
+public slots:
+    void onEventHandled();
+
+protected:
+    virtual void handleEvent() = 0;
+
+protected:
+    QString deviceId;
+    DiskManager& manager;
+};
+
+class MountHandler : public EventHandler
+{
+public:
+    MountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
+
+protected:
+    virtual void handleEvent();
+};
+
+class UnmountHandler : public EventHandler
+{
+    Q_OBJECT
+public:
+    UnmountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
+
+public slots:
+    virtual void handleEvent();
 };
 
 #endif // TINYMOUNTTRAY_H

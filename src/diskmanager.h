@@ -42,6 +42,7 @@ struct DeviceInfo
     QString fileSystem;
     DeviceType type;
     bool mounted;
+    QString udisksPath;
 };
 
 class DiskManager : public QObject
@@ -54,6 +55,9 @@ public:
     typedef QMap<QString, DeviceInfo*> DeviceMap;
 
     Devices devices() const { return deviceCache.values(); }
+
+    bool mountDevice(const QString& path);
+    bool unmountDevice(const QString& path);
 
 signals:
     void deviceAdded(const DeviceInfo& device);

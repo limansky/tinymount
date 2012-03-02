@@ -66,34 +66,83 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 {
     qDebug() << "Creating UI";
 
+    //QIcon::setThemeName("gtk+");
+
     manager = new DiskManager(this);
     connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
     connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
 
     trayMenu = new QMenu();
-
-    foreach (const DeviceInfo* d, manager->devices())
-    {
-        trayMenu->addAction(iconForType(d->type),
-                            QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)));
-    }
-
-    trayMenu->addSeparator();
-    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
+    updateMenu();
 
     tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
     tray->show();
     tray->setContextMenu(trayMenu);
 }
 
+void TinyMountTray::updateMenu()
+{
+    trayMenu->clear();
+
+    foreach (const DeviceInfo* d, manager->devices())
+    {
+        EventHandler * h = 0;
+        if (d->mounted)
+            h = new UnmountHandler(d->udisksPath, *manager, this);
+        else
+            h = new MountHandler(d->udisksPath, *manager, this);
+
+        trayMenu->addAction(iconForType(d->type),
+                            QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)),
+                            h, SLOT(onEventHandled()));
+    }
+
+    trayMenu->addSeparator();
+    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
+}
+
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
     qDebug() << "Device added:" << device.name;
     tray->showMessage(tr("Device is added"), device.name);
+    updateMenu();
 }
 
 void TinyMountTray::onDeviceRemoved(const DeviceInfo &device)
 {
     qDebug() << "Device removed:" << device.name;
     tray->showMessage(tr("Device is removed"), device.name);
+    updateMenu();
+}
+
+EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)
+    : QObject(parent)
+    , deviceId(id)
+    , manager(diskManager)
+{
+}
+
+void EventHandler::onEventHandled()
+{
+    handleEvent();
+}
+
+MountHandler::MountHandler(const QString &id, DiskManager& diskManager, QObject *parent)
+    : EventHandler(id, diskManager, parent)
+{
+}
+
+void MountHandler::handleEvent()
+{
+    manager.mountDevice(deviceId);
+}
+
+UnmountHandler::UnmountHandler(const QString &id, DiskManager& diskManager, QObject *parent)
+    : EventHandler(id, diskManager, parent)
+{
+}
+
+void UnmountHandler::handleEvent()
+{
+    manager.unmountDevice(deviceId);
 }
