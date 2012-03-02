@@ -83,6 +83,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 void TinyMountTray::updateMenu()
 {
     trayMenu->clear();
+    qDeleteAll(handers);
+    handers.clear();
 
     foreach (const DeviceInfo* d, manager->devices())
     {
@@ -95,6 +97,7 @@ void TinyMountTray::updateMenu()
         trayMenu->addAction(iconForType(d->type),
                             QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)),
                             h, SLOT(onEventHandled()));
+        handers << h;
     }
 
     trayMenu->addSeparator();

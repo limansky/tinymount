@@ -26,6 +26,7 @@ class QSystemTrayIcon;
 class QMenu;
 class DeviceInfo;
 class DiskManager;
+class EventHandler;
 
 class TinyMountTray : public QObject
 {
@@ -44,6 +45,7 @@ private:
     QSystemTrayIcon* tray;
     QMenu* trayMenu;
     DiskManager* manager;
+    QList<EventHandler*> handers;
 };
 
 class EventHandler : public QObject
