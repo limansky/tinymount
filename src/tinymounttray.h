@@ -34,12 +34,10 @@ class TinyMountTray : public QObject
 public:
     explicit TinyMountTray(QObject *parent = 0);
 
-private:
-    void updateMenu();
-
-private slots:
+public slots:
     void onDeviceAdded(const DeviceInfo& device);
     void onDeviceRemoved(const DeviceInfo& device);
+    void reloadDevices();
 
 private:
     QSystemTrayIcon* tray;

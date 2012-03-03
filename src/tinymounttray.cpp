@@ -66,21 +66,20 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 {
     qDebug() << "Creating UI";
 
-    //QIcon::setThemeName("gtk+");
-
     manager = new DiskManager(this);
     connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
     connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
+    connect(manager, SIGNAL(deviceChanged(DeviceInfo)), this, SLOT(reloadDevices()));
 
     trayMenu = new QMenu();
-    updateMenu();
+    reloadDevices();
 
     tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
     tray->show();
     tray->setContextMenu(trayMenu);
 }
 
-void TinyMountTray::updateMenu()
+void TinyMountTray::reloadDevices()
 {
     trayMenu->clear();
     qDeleteAll(handers);
@@ -89,12 +88,19 @@ void TinyMountTray::updateMenu()
     foreach (const DeviceInfo* d, manager->devices())
     {
         EventHandler * h = 0;
+        QIcon icon;
         if (d->mounted)
+        {
             h = new UnmountHandler(d->udisksPath, *manager, this);
+            icon = iconForType(d->type);
+        }
         else
+        {
             h = new MountHandler(d->udisksPath, *manager, this);
+            icon = QIcon::fromTheme("media-eject");
+        }
 
-        trayMenu->addAction(iconForType(d->type),
+        trayMenu->addAction(icon,
                             QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)),
                             h, SLOT(onEventHandled()));
         handers << h;
@@ -108,14 +114,14 @@ void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
     qDebug() << "Device added:" << device.name;
     tray->showMessage(tr("Device is added"), device.name);
-    updateMenu();
+    reloadDevices();
 }
 
 void TinyMountTray::onDeviceRemoved(const DeviceInfo &device)
 {
     qDebug() << "Device removed:" << device.name;
     tray->showMessage(tr("Device is removed"), device.name);
-    updateMenu();
+    reloadDevices();
 }
 
 EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)

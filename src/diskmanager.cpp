@@ -24,6 +24,8 @@
 static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
 
+#define LOG_DEVICE_INFO
+
 namespace {
     bool containsFlashTypes(const QStringList& compatibility)
     {
@@ -67,10 +69,10 @@ DiskManager::DiskManager(QObject *parent) :
 
 DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
 {
-    qDebug() << "DiskManager::deviceForPath" << path.path();
-
     UDisksDeviceInterface dev(UDISKS_SERVICE, path.path(), QDBusConnection::systemBus());
 
+#ifdef LOG_DEVICE_INFO
+    qDebug() << "DiskManager::deviceForPath" << path.path();
     qDebug() << dev.nativePath();
     qDebug() << "\tsize =" << dev.deviceSize();
     qDebug() << "\tisDrive =" << dev.deviceIsDrive();
@@ -85,28 +87,31 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << "\tplabel =" << dev.partitionLabel();
     qDebug() << "\tdpname =" << dev.devicePresentationName() << ", " << dev.devicePresentationIconName();
     qDebug() << "\tcompatibility" << dev.driveMediaCompatibility();
+#endif
 
     DeviceInfo* d = 0;
 
-    if (dev.deviceIsPartition()
-        && dev.partitionType() != "0x05" // extended partition.
-        && dev.idType() != "swap"        // skip swap
-       )
+    if (dev.deviceIsPartition())
     {
-        d = new DeviceInfo;
+        if (dev.partitionType() != "0x05"    // extended partition.
+            && dev.idType() != "swap"        // skip swap
+           )
+        {
+            d = new DeviceInfo;
 
-        d->udisksPath = path.path();
-        const QString& label = dev.idLabel();
-        const QString& fn = dev.deviceFile();
-        d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
-        d->size = dev.deviceSize();
-        d->fileSystem = dev.idType();
-        d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
-                  dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
-                  dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
-                  containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
-                                                                      DeviceInfo::Other;
-        d->mounted = dev.deviceIsMounted();
+            d->udisksPath = path.path();
+            const QString& label = dev.idLabel();
+            const QString& fn = dev.deviceFile();
+            d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
+            d->size = dev.deviceSize();
+            d->fileSystem = dev.idType();
+            d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
+                      dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
+                      dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
+                      containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
+                                                                          DeviceInfo::Other;
+            d->mounted = dev.deviceIsMounted();
+        }
     }
 
     return d;
@@ -143,6 +148,7 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
     {
         delete deviceCache.value(path.path());
         deviceCache.insert(path.path(), d);
+        emit deviceChanged(*d);
     }
     else
     {
