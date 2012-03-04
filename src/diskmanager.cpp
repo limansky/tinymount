@@ -24,7 +24,8 @@
 static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
 
-#define LOG_DEVICE_INFO
+// Uncomment this to get verbose udisks log.
+// #define LOG_DEVICE_INFO
 
 namespace {
     bool containsFlashTypes(const QStringList& compatibility)
@@ -62,6 +63,7 @@ DiskManager::DiskManager(QObject *parent) :
         DeviceInfo* info = deviceForPath(d);
         if (0 != info)
         {
+            qDebug() << "Adding device to cache:" << d.path();
             deviceCache.insert(d.path(), info);
         }
     }
