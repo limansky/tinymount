@@ -24,66 +24,95 @@
 
 #include "tinymounttray.h"
 
-struct Option {
-    typedef void (*Handler)(const QString&);
-    Option(const QString& paramName, bool withValue, Handler paramHandler = 0, const QString& description = "")
-        : name(paramName)
-        , hasValue(withValue)
-        , handler(paramHandler)
-        ,desc(description)
-    {}
+namespace {
+    struct Option {
+        typedef void (*Handler)(const QString&);
+        Option(const QString& paramName, bool withValue, Handler paramHandler = 0, const QString& description = "")
+            : name(paramName)
+            , hasValue(withValue)
+            , handler(paramHandler)
+            ,desc(description)
+        {}
 
-    QString name;
-    bool hasValue;
-    Handler handler;
-    QString desc;
-};
+        QString name;
+        bool hasValue;
+        Handler handler;
+        QString desc;
+    };
 
-void processArgs(const QList<Option>& options, const QString& usageOption="", const QString& usagePrefix = "")
-{
-    if (!usageOption.isEmpty())
+    typedef QList<Option> Options;
+
+    void showUsage(const Options& options, const QString& usageOption, const QString& usagePrefix)
     {
-        foreach (const QString a, QApplication::arguments())
+        QTextStream cout(stdout);
+
+        if (!usagePrefix.isEmpty())
         {
-            if (a == usageOption)
-            {
-                QTextStream cout(stdout);
-
-                if (!usagePrefix.isEmpty())
-                {
-                    cout << usagePrefix << "\n";
-                }
-
-                cout << qApp->translate("Arguments", "Parameters:\n");
-                foreach (const Option o, options)
-                {
-                    cout << "\t" << o.name << "\t" << o.desc << "\n";
-                }
-
-                cout.flush();
-
-                ::exit(0);
-            }
+            cout << usagePrefix << "\n";
         }
+
+        cout << qApp->translate("Arguments", "Parameters:\n");
+        QStringList args;
+        int arglen = 0;
+
+        foreach (const Option& o, options)
+        {
+            QString arg = "--" + o.name;
+            if (o.hasValue) arg += "=VALUE";
+            if (arg.length() > arglen) arglen = arg.length();
+            args << arg;
+        }
+
+        if (usageOption.length() + 2 > arglen) arglen = usageOption.length() + 2;
+
+        Q_ASSERT(args.length() == options.length());
+
+        Options::const_iterator op = options.constBegin();
+        for (QStringList::const_iterator a = args.constBegin(); a != args.constEnd(); ++a)
+        {
+            cout << "\t" << *a << QString(arglen - a->length(), ' ') << "\t" << (op++)->desc << "\n";
+        }
+
+        cout << "\t--" << usageOption << QString(arglen - usageOption.length(), ' ')
+             << "\t" << qApp->translate("Arguments", "Show this information\n");
+
+        cout.flush();
+
     }
 
-    foreach (const Option& o, options)
+    void processArgs(const QList<Option>& options, const QString& usageOption="", const QString& usagePrefix = "")
     {
-        QString patternString = "^--" + o.name;
-
-        if (o.hasValue) patternString += "=(\\S+)";
-
-        QRegExp pattern(patternString);
-
-        foreach (const QString& a, QApplication::arguments())
+        if (!usageOption.isEmpty())
         {
-
-            if (pattern.exactMatch(a))
+            const QString usageParameter = "--" + usageOption;
+            foreach (const QString a, QApplication::arguments())
             {
-                qDebug() << "Found param:" << a << "processing as" << o.desc;
-                if (0 != o.handler)
+                if (a == usageParameter)
                 {
-                    o.handler(pattern.cap(1));
+                    showUsage(options, usageOption, usagePrefix);
+                    ::exit(0);
+                }
+            }
+        }
+
+        foreach (const Option& o, options)
+        {
+            QString patternString = "^--" + o.name;
+
+            if (o.hasValue) patternString += "=(\\S+)";
+
+            QRegExp pattern(patternString);
+
+            foreach (const QString& a, QApplication::arguments())
+            {
+
+                if (pattern.exactMatch(a))
+                {
+                    qDebug() << "Found param:" << a << "processing as" << o.desc;
+                    if (0 != o.handler)
+                    {
+                        o.handler(pattern.cap(1));
+                    }
                 }
             }
         }
@@ -103,7 +132,7 @@ int main(int argc, char** argv)
         qFatal("No system tray available");
     }
 
-    processArgs(SUPPORTED_OPTIONS, "--help", "tinymount, version 0.0.1");
+    processArgs(SUPPORTED_OPTIONS, "help", QString("tinymount, version ") + TINYMOUNT_VERSION);
 
     QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
     TinyMountTray tmt;

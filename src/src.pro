@@ -19,6 +19,8 @@
 
 TEMPLATE = app
 TARGET = tinymount
+VERSION = 0.0.1
+
 DEPENDPATH += .
 INCLUDEPATH += .
 
@@ -45,3 +47,5 @@ SOURCES += \
     udisks/udisksdeviceinterface.cpp
 
 RESOURCES += tinymount.qrc
+
+DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\"
