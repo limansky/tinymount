@@ -132,6 +132,7 @@ int main(int argc, char** argv)
         qFatal("No system tray available");
     }
 
+    QApplication::setQuitOnLastWindowClosed(false);
     processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("Arguments", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
 
     QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
