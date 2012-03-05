@@ -25,6 +25,7 @@
 #include <QtDebug>
 #include <QMenu>
 #include <QApplication>
+#include <QMessageBox>
 
 namespace {
     QIcon iconForType (DeviceInfo::DeviceType type)
@@ -107,6 +108,7 @@ void TinyMountTray::reloadDevices()
     }
 
     trayMenu->addSeparator();
+    trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
     trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
 }
 
@@ -122,6 +124,13 @@ void TinyMountTray::onDeviceRemoved(const DeviceInfo &device)
     qDebug() << "Device removed:" << device.name;
     tray->showMessage(tr("Device is removed"), device.name);
     reloadDevices();
+}
+
+void TinyMountTray::showAbout()
+{
+    QMessageBox::about(0, tr("TinyMount, version %1").arg(TINYMOUNT_VERSION),
+                          tr("Copyright (c) 2012 Mike Limansky\n\n"
+                             "Use and redistribute under terms of the GNU General Public License Version 2."));
 }
 
 EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)

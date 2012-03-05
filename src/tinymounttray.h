@@ -38,6 +38,7 @@ public slots:
     void onDeviceAdded(const DeviceInfo& device);
     void onDeviceRemoved(const DeviceInfo& device);
     void reloadDevices();
+    void showAbout();
 
 private:
     QSystemTrayIcon* tray;
