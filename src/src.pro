@@ -48,4 +48,6 @@ SOURCES += \
 
 RESOURCES += tinymount.qrc
 
+TRANSLATIONS = translations/tinymount_ru.ts
+
 DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\"

@@ -4,3 +4,4 @@ moc_*
 qrc_*
 *.pro.user
 tinymount
+*.qm

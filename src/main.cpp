@@ -21,6 +21,8 @@
 #include <QSystemTrayIcon>
 #include <QFile>
 #include <QDebug>
+#include <QTranslator>
+#include <QLibraryInfo>
 
 #include "tinymounttray.h"
 
@@ -120,7 +122,7 @@ namespace {
 }
 
 static const QList<Option> SUPPORTED_OPTIONS = QList<Option>()
-        << Option(("iconTheme"), true, QIcon::setThemeName, QT_TR_NOOP("Set icon theme to be used"));
+        << Option(("iconTheme"), true, QIcon::setThemeName, QT_TRANSLATE_NOOP("Arguments", "Set icon theme to be used"));
 
 
 int main(int argc, char** argv)
@@ -133,7 +135,17 @@ int main(int argc, char** argv)
     }
 
     QApplication::setQuitOnLastWindowClosed(false);
-    processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("Arguments", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
+
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(),
+            QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
+
+    QTranslator tmTranslator;
+    tmTranslator.load("tinymount_" + QLocale::system().name());
+    app.installTranslator(&tmTranslator);
+
+    processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("TinyMountTray", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
 
     QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
     TinyMountTray tmt;
