@@ -60,7 +60,7 @@ DiskManager::DiskManager(QObject *parent) :
 
     foreach(const QDBusObjectPath& d, devs.value())
     {
-        DeviceInfo* info = deviceForPath(d);
+        DeviceInfoPtr info = deviceForPath(d);
         if (0 != info)
         {
             qDebug() << "Adding device to cache:" << d.path();
@@ -69,7 +69,7 @@ DiskManager::DiskManager(QObject *parent) :
     }
 }
 
-DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
+DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 {
     UDisksDeviceInterface dev(UDISKS_SERVICE, path.path(), QDBusConnection::systemBus());
 
@@ -91,7 +91,7 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << "\tcompatibility" << dev.driveMediaCompatibility();
 #endif
 
-    DeviceInfo* d = 0;
+    DeviceInfoPtr d;
 
     if (dev.deviceIsPartition())
     {
@@ -99,7 +99,7 @@ DeviceInfo* DiskManager::deviceForPath(const QDBusObjectPath &path)
             && dev.idType() != "swap"        // skip swap
            )
         {
-            d = new DeviceInfo;
+            d = DeviceInfoPtr(new DeviceInfo);
 
             d->udisksPath = path.path();
             const QString& label = dev.idLabel();
@@ -123,7 +123,7 @@ void DiskManager::onDeviceAdded(const QDBusObjectPath &path)
 {
     qDebug() << "Device added:" << path.path();
 
-    DeviceInfo* d = deviceForPath(path);
+    DeviceInfoPtr d = deviceForPath(path);
 
     if (0 != d)
     {
@@ -136,30 +136,29 @@ void DiskManager::onDeviceRemoved(const QDBusObjectPath &path)
 {
     qDebug() << "Device removed:" << path.path();
 
-    delete deviceCache.value(path.path());
+    DeviceInfoPtr d = deviceCache.value(path.path());
     deviceCache.remove(path.path());
+    emit deviceRemoved(d);
 }
 
 void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
 {
     qDebug() << "Device changed:" << path.path();
 
-    DeviceInfo* d = deviceForPath(path);
+    DeviceInfoPtr d = deviceForPath(path);
 
     if (0 != d)
     {
-        delete deviceCache.value(path.path());
         deviceCache.insert(path.path(), d);
         emit deviceChanged(*d);
     }
     else
     {
-        delete deviceCache.value(path.path());
         deviceCache.remove(path.path());
     }
 }
 
-bool DiskManager::mountDevice(const QString& path)
+DiskManager::MountResult DiskManager::mountDevice(const QString& path)
 {
     qDebug() << "mountDevice:" << path;
     DeviceMap::iterator it = deviceCache.find(path);
@@ -167,7 +166,7 @@ bool DiskManager::mountDevice(const QString& path)
     if (it == deviceCache.end())
     {
         qWarning() << "Unknown device passed. Path = " << path;
-        return false;
+        return MountResult(-1, "");
     }
 
     UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
@@ -176,8 +175,8 @@ bool DiskManager::mountDevice(const QString& path)
 
     r.waitForFinished();
 
-    qDebug() << r.value();
-    return r.isValid();
+    const QString& mountPath = r.isValid() ? r.value() : "";
+    return MountResult(r.error().type(), mountPath);
 }
 
 bool DiskManager::unmountDevice(const QString& path)

@@ -69,7 +69,7 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 
     manager = new DiskManager(this);
     connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
-    connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
+    connect(manager, SIGNAL(deviceRemoved(DeviceInfoPtr)), this, SLOT(onDeviceRemoved(DeviceInfoPtr)));
     connect(manager, SIGNAL(deviceChanged(DeviceInfo)), this, SLOT(reloadDevices()));
 
     trayMenu = new QMenu();
@@ -78,6 +78,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
     tray->show();
     tray->setContextMenu(trayMenu);
+
+    connect(tray, SIGNAL(messageClicked()), trayMenu, SLOT(show()));
 }
 
 void TinyMountTray::reloadDevices()
@@ -86,7 +88,7 @@ void TinyMountTray::reloadDevices()
     qDeleteAll(handers);
     handers.clear();
 
-    foreach (const DeviceInfo* d, manager->devices())
+    foreach (const DeviceInfoPtr d, manager->devices())
     {
         EventHandler * h = 0;
         QIcon icon;
@@ -119,10 +121,10 @@ void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
     reloadDevices();
 }
 
-void TinyMountTray::onDeviceRemoved(const DeviceInfo &device)
+void TinyMountTray::onDeviceRemoved(const DeviceInfoPtr device)
 {
-    qDebug() << "Device removed:" << device.name;
-    tray->showMessage(tr("Device is removed"), device.name);
+    qDebug() << "Device removed:" << device->name;
+    tray->showMessage(tr("Device is removed"), device->name);
     reloadDevices();
 }
 

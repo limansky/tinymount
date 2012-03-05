@@ -22,6 +22,8 @@
 
 #include <QObject>
 #include <QMap>
+//#include <QSharedPointer>
+#include <tr1/memory>
 
 class UDisksInterface;
 class QDBusObjectPath;
@@ -45,23 +47,39 @@ struct DeviceInfo
     QString udisksPath;
 };
 
+typedef std::tr1::shared_ptr<DeviceInfo> DeviceInfoPtr;
+
 class DiskManager : public QObject
 {
     Q_OBJECT
 public:
+    struct MountResult
+    {
+        MountResult(int error, const QString& path)
+            : error(error)
+            , path(path)
+        {
+        }
+
+        int error;
+        QString path;
+    };
+
     explicit DiskManager(QObject *parent = 0);
 
-    typedef QList<DeviceInfo*> Devices;
-    typedef QMap<QString, DeviceInfo*> DeviceMap;
+    typedef QList<DeviceInfoPtr> Devices;
+    typedef QMap<QString, DeviceInfoPtr> DeviceMap;
 
     Devices devices() const { return deviceCache.values(); }
 
-    bool mountDevice(const QString& path);
+    MountResult mountDevice(const QString& path);
     bool unmountDevice(const QString& path);
+
+    const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
 
 signals:
     void deviceAdded(const DeviceInfo& device);
-    void deviceRemoved(const DeviceInfo& device);
+    void deviceRemoved(const DeviceInfoPtr device);
     void deviceChanged(const DeviceInfo& device);
 
 private slots:
@@ -70,7 +88,7 @@ private slots:
     void onDeviceChanged(const QDBusObjectPath& path);
 
 private:
-    DeviceInfo* deviceForPath(const QDBusObjectPath& path);
+    DeviceInfoPtr deviceForPath(const QDBusObjectPath& path);
 
 private:
     UDisksInterface* udisks;

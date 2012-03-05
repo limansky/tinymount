@@ -21,12 +21,15 @@
 #define TINYMOUNTTRAY_H
 
 #include <QObject>
+#include <tr1/memory>
 
 class QSystemTrayIcon;
 class QMenu;
 class DeviceInfo;
 class DiskManager;
 class EventHandler;
+
+typedef std::tr1::shared_ptr<DeviceInfo> DeviceInfoPtr;
 
 class TinyMountTray : public QObject
 {
@@ -36,7 +39,7 @@ public:
 
 public slots:
     void onDeviceAdded(const DeviceInfo& device);
-    void onDeviceRemoved(const DeviceInfo& device);
+    void onDeviceRemoved(const DeviceInfoPtr device);
     void reloadDevices();
     void showAbout();
 
