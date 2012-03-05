@@ -1,0 +1,6 @@
+TinyMount-0.0.1
+---------------
+  First release.
+  Features supported:
+    - notify on device connected/disconnected.
+	- mount/unmount device by user click.
