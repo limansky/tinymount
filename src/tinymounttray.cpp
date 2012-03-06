@@ -130,14 +130,14 @@ void TinyMountTray::reloadDevices()
             UnmountHandler* uh = new UnmountHandler(d->udisksPath, *manager, this);
             connect(uh, SIGNAL(unmountDone(QString,int)), this, SLOT(onUnmountDone(QString,int)));
             h = uh;
-            icon = iconForType(d->type);
+            icon = QIcon::fromTheme("media-eject");
         }
         else
         {
             MountHandler* mh = new MountHandler(d->udisksPath, *manager, this);
             connect(mh, SIGNAL(mountDone(QString,QString,int)), this, SLOT(onMountDone(QString,QString,int)));
             h = mh;
-            icon = QIcon::fromTheme("media-eject");
+            icon = iconForType(d->type);
         }
 
         trayMenu->addAction(icon,
