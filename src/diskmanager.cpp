@@ -134,7 +134,7 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     DeviceInfoPtr d;
 
-    if (dev.deviceIsPartition())
+    if (dev.deviceIsPartition() || dev.deviceIsOpticalDisc())
     {
         if (dev.partitionType() != "0x05"    // extended partition.
             && dev.idType() != "swap"        // skip swap
