@@ -37,8 +37,49 @@ namespace {
                 return true;
             }
         }
-
         return false;
+    }
+
+    DiskManager::ErrorCode mapErrorName(const QDBusError& error)
+    {
+        DiskManager::ErrorCode err = DiskManager::OK;
+
+        if (error.isValid())
+        {
+            if (error.type() == QDBusError::Other)
+            {
+                if (error.name() == "org.freedesktop.UDisks.Error.NotAuthorized")
+                {
+                    err = DiskManager::NotAuthorized;
+                }
+                else if (error.name() == "org.freedesktop.UDisks.Error.Busy")
+                {
+                    err = DiskManager::Busy;
+                }
+                else if (error.name() == "org.freedesktop.UDisks.Error.Failed")
+                {
+                    err = DiskManager::Failed;
+                }
+                else if (error.name() == "org.freedesktop.UDisks.Error.Cancelled")
+                {
+                    err = DiskManager::Cancelled;
+                }
+                else if (error.name() == "org.freedesktop.UDisks.Error.FilesystemDriverMissing")
+                {
+                    err = DiskManager::UnknownFileSystem;
+                }
+                else
+                {
+                    err = DiskManager::InvalidRequest;
+                }
+            }
+            else
+            {
+                err = DiskManager::DBusError;
+            }
+        }
+
+        return err;
     }
 }
 
@@ -137,8 +178,11 @@ void DiskManager::onDeviceRemoved(const QDBusObjectPath &path)
     qDebug() << "Device removed:" << path.path();
 
     DeviceInfoPtr d = deviceCache.value(path.path());
-    deviceCache.remove(path.path());
-    emit deviceRemoved(d);
+    if (0 != d)
+    {
+        emit deviceRemoved(*d);
+        deviceCache.remove(path.path());
+    }
 }
 
 void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
@@ -166,7 +210,7 @@ DiskManager::MountResult DiskManager::mountDevice(const QString& path)
     if (it == deviceCache.end())
     {
         qWarning() << "Unknown device passed. Path = " << path;
-        return MountResult(-1, "");
+        return MountResult(InvalidRequest, "");
     }
 
     UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
@@ -176,10 +220,10 @@ DiskManager::MountResult DiskManager::mountDevice(const QString& path)
     r.waitForFinished();
 
     const QString& mountPath = r.isValid() ? r.value() : "";
-    return MountResult(r.error().type(), mountPath);
+    return MountResult(mapErrorName(r.error()), mountPath);
 }
 
-bool DiskManager::unmountDevice(const QString& path)
+int DiskManager::unmountDevice(const QString& path)
 {
     qDebug() << "unmountDevice:" << path;
     DeviceMap::iterator it = deviceCache.find(path);
@@ -195,5 +239,6 @@ bool DiskManager::unmountDevice(const QString& path)
     QDBusPendingReply<> r = dev.FilesystemUnmount(QStringList());
 
     r.waitForFinished();
-    return r.isValid();
+
+    return mapErrorName(r.error());
 }

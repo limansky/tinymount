@@ -21,15 +21,12 @@
 #define TINYMOUNTTRAY_H
 
 #include <QObject>
-#include <tr1/memory>
 
 class QSystemTrayIcon;
 class QMenu;
 class DeviceInfo;
 class DiskManager;
 class EventHandler;
-
-typedef std::tr1::shared_ptr<DeviceInfo> DeviceInfoPtr;
 
 class TinyMountTray : public QObject
 {
@@ -39,9 +36,12 @@ public:
 
 public slots:
     void onDeviceAdded(const DeviceInfo& device);
-    void onDeviceRemoved(const DeviceInfoPtr device);
+    void onDeviceRemoved(const DeviceInfo& device);
     void reloadDevices();
     void showAbout();
+
+    void onMountDone(const QString& devPath, const QString& mountPath, int status);
+    void onUnmountDone(const QString& devPath, int status);
 
 private:
     QSystemTrayIcon* tray;
@@ -69,8 +69,12 @@ protected:
 
 class MountHandler : public EventHandler
 {
+    Q_OBJECT
 public:
     MountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
+
+signals:
+    void mountDone(const QString& devPath, const QString& mountPath, int status);
 
 protected:
     virtual void handleEvent();
@@ -81,6 +85,9 @@ class UnmountHandler : public EventHandler
     Q_OBJECT
 public:
     UnmountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
+
+signals:
+    void unmountDone(const QString& path, int status);
 
 public slots:
     virtual void handleEvent();

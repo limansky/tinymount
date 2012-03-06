@@ -22,7 +22,6 @@
 
 #include <QObject>
 #include <QMap>
-//#include <QSharedPointer>
 #include <tr1/memory>
 
 class UDisksInterface;
@@ -53,15 +52,27 @@ class DiskManager : public QObject
 {
     Q_OBJECT
 public:
+    enum ErrorCode
+    {
+        OK,
+        DBusError,
+        NotAuthorized,
+        Busy,
+        Failed,
+        Cancelled,
+        InvalidRequest,
+        UnknownFileSystem
+    };
+
     struct MountResult
     {
-        MountResult(int error, const QString& path)
+        MountResult(ErrorCode error, const QString& path)
             : error(error)
             , path(path)
         {
         }
 
-        int error;
+        ErrorCode error;
         QString path;
     };
 
@@ -73,13 +84,13 @@ public:
     Devices devices() const { return deviceCache.values(); }
 
     MountResult mountDevice(const QString& path);
-    bool unmountDevice(const QString& path);
+    int unmountDevice(const QString& path);
 
     const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
 
 signals:
     void deviceAdded(const DeviceInfo& device);
-    void deviceRemoved(const DeviceInfoPtr device);
+    void deviceRemoved(const DeviceInfo& device);
     void deviceChanged(const DeviceInfo& device);
 
 private slots:
