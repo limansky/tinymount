@@ -136,7 +136,8 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     if (dev.deviceIsPartition() || dev.deviceIsOpticalDisc())
     {
-        if (dev.partitionType() != "0x05"    // extended partition.
+        if (dev.partitionType() != "0x05"    // extended partition
+            && dev.partitionType() != "0x0f"    // extended Win95 partition
             && dev.idType() != "swap"        // skip swap
            )
         {
