@@ -24,7 +24,14 @@ VERSION = 0.0.1
 DEPENDPATH += .
 INCLUDEPATH += .
 
-CONFIG += debug
+CONFIG += debug_and_release
+
+isEmpty(PREFIX) {
+    PREFIX = /usr/local
+}
+
+BINDIR = $$PREFIX/bin
+DATADIR = $$PREFIX/share/tinymount
 
 QT += dbus
 
@@ -58,4 +65,11 @@ QMAKE_EXTRA_COMPILERS += updateqm
 
 PRE_TARGETDEP=updateqm
 
-DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\"
+translations.path = $$DATADIR
+translations.files = *.qm
+
+target.path = $$BINDIR
+
+INSTALLS = target translations
+
+DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\" DATADIR=\\\"$${DATADIR}\\\"

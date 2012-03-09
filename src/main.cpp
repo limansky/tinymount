@@ -142,7 +142,7 @@ int main(int argc, char** argv)
     app.installTranslator(&qtTranslator);
 
     QTranslator tmTranslator;
-    tmTranslator.load("tinymount_" + QLocale::system().name());
+    tmTranslator.load("tinymount_" + QLocale::system().name(), DATADIR);
     app.installTranslator(&tmTranslator);
 
     processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("TinyMountTray", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
