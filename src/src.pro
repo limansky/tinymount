@@ -50,4 +50,12 @@ RESOURCES += tinymount.qrc
 
 TRANSLATIONS = translations/tinymount_ru.ts
 
+updateqm.input = TRANSLATIONS
+updateqm.output = ${QMAKE_FILE_BASE}.qm
+updateqm.commands = lrelease -silent ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_BASE}.qm
+updateqm.CONFIG += no_link target_predeps
+QMAKE_EXTRA_COMPILERS += updateqm
+
+PRE_TARGETDEP=updateqm
+
 DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\"
