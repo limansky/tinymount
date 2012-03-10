@@ -66,7 +66,7 @@ QMAKE_EXTRA_COMPILERS += updateqm
 PRE_TARGETDEP=updateqm
 
 translations.path = $$DATADIR
-translations.files = *.qm
+translations.files = ./*.qm
 
 target.path = $$BINDIR
 
