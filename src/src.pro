@@ -61,12 +61,11 @@ updateqm.input = TRANSLATIONS
 updateqm.output = ${QMAKE_FILE_BASE}.qm
 updateqm.commands = lrelease -silent ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_BASE}.qm
 updateqm.CONFIG += no_link target_predeps
+updateqm.variable_out = translations.files
 QMAKE_EXTRA_COMPILERS += updateqm
 
-PRE_TARGETDEP=updateqm
-
 translations.path = $$DATADIR
-translations.files = ./*.qm
+translations.CONFIG += no_check_exist
 
 target.path = $$BINDIR
 
