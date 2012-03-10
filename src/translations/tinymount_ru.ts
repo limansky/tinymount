@@ -31,32 +31,32 @@
     <message>
         <location filename="../tinymounttray.cpp" line="74"/>
         <source>User not authorized</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь не авторизован</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="77"/>
         <source>Device is busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство занято</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="80"/>
-        <source>Operation is failed.</source>
-        <translation type="unfinished"></translation>
+        <source>Operation is failed</source>
+        <translation>Не получилось</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="83"/>
         <source>Request is cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрос отменен</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="86"/>
         <source>Unknown filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный тип файловой системы</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="89"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -90,42 +90,42 @@
     <message>
         <location filename="../tinymounttray.cpp" line="177"/>
         <source>Device is mounted</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство смонтировано</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="177"/>
-        <source>%1 is mounted to %2</source>
-        <translation type="unfinished"></translation>
+        <source>%1 is mounted to %2.</source>
+        <translation>%1 смонтирован в %2.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="181"/>
+        <source>%1 mounting error. %2.</source>
+        <translation>Не могу смонтировать %1. %2.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="194"/>
+        <source>%1 is unmounted successfuly.</source>
+        <translation>%1 успешно отмонтирован.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="198"/>
+        <source>Failed to unmount %1. %2.</source>
+        <translation>Не могу отмонтировать %1. %2.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="181"/>
         <source>Mount failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tinymounttray.cpp" line="181"/>
-        <source>%1 mounting error. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка монтирования</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="194"/>
         <source>Device is unmounted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tinymounttray.cpp" line="194"/>
-        <source>%1 is unmounted successfuly</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство отмонтировано</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="198"/>
         <source>Unmount failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tinymounttray.cpp" line="198"/>
-        <source>Failed to unmount %1. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка размонтирования</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="205"/>

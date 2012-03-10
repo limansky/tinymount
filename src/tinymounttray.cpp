@@ -77,7 +77,7 @@ namespace {
             string = qApp->translate("Errors", "Device is busy");
             break;
         case DiskManager::Failed:
-            string = qApp->translate("Errors", "Operation is failed.");
+            string = qApp->translate("Errors", "Operation is failed");
             break;
         case DiskManager::Cancelled:
             string = qApp->translate("Errors", "Request is cancelled");
@@ -174,11 +174,11 @@ void TinyMountTray::onMountDone(const QString &devPath, const QString &mountPath
 
     if (DiskManager::OK == status)
     {
-        tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2").arg(d->name).arg(mountPath));
+        tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(d->name).arg(mountPath));
     }
     else
     {
-        tray->showMessage(tr("Mount failed"), tr("%1 mounting error. %2").arg(d->name).arg(errorToString(status)));
+        tray->showMessage(tr("Mount failed"), tr("%1 mounting error. %2.").arg(d->name).arg(errorToString(status)));
     }
 }
 
@@ -191,11 +191,11 @@ void TinyMountTray::onUnmountDone(const QString &devPath, int status)
 
     if (DiskManager::OK == status)
     {
-        tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly").arg(d->name));
+        tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(d->name));
     }
     else
     {
-        tray->showMessage(tr("Unmount failed"), tr("Failed to unmount %1. %2").arg(d->name).arg(errorToString(status)));
+        tray->showMessage(tr("Unmount failed"), tr("Failed to unmount %1. %2.").arg(d->name).arg(errorToString(status)));
     }
 }
 
