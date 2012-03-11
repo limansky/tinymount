@@ -154,14 +154,14 @@ void TinyMountTray::reloadDevices()
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
     qDebug() << "Device added:" << device.name;
-    tray->showMessage(tr("Device is added"), device.name);
+    tray->showMessage(tr("Device is added"), tr("Device %1 is added").arg(device.name));
     reloadDevices();
 }
 
 void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
 {
     qDebug() << "Device removed:" << device.name;
-    tray->showMessage(tr("Device is removed"), device.name);
+    tray->showMessage(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
     reloadDevices();
 }
 

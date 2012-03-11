@@ -83,9 +83,19 @@
         <translation>Устройство добавлено</translation>
     </message>
     <message>
+        <location filename="../tinymounttray.cpp" line="157"/>
+        <source>Device %1 is added</source>
+        <translation>Добавлено устройство %1</translation>
+    </message>
+    <message>
         <location filename="../tinymounttray.cpp" line="164"/>
         <source>Device is removed</source>
         <translation>Устройство удалено</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="164"/>
+        <source>Device %1 is removed</source>
+        <translation>Устройство %1 удалено</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="177"/>
@@ -132,7 +142,9 @@
         <source>Copyright (c) 2012 Mike Limansky
 
 Use and redistribute under terms of the GNU General Public License Version 2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright (c) 2012 Mike Limansky
+
+Использование и распространение на условиях GNU General Public License версия 2.</translation>
     </message>
 </context>
 </TS>
