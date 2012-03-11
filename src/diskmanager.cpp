@@ -181,8 +181,8 @@ void DiskManager::onDeviceRemoved(const QDBusObjectPath &path)
     DeviceInfoPtr d = deviceCache.value(path.path());
     if (0 != d)
     {
-        emit deviceRemoved(*d);
         deviceCache.remove(path.path());
+        emit deviceRemoved(*d);
     }
 }
 
