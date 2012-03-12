@@ -1,6 +1,13 @@
+TinyMount-0.1.95
+  First 0.2 alpfa
+  New features:
+    - add config file
+    - support settings to hide system disks, hide notifications (except
+      errors).
+
 TinyMount-0.1.0
 ---------------
   First release.
   Features supported:
     - notify on device connected/disconnected.
-	- mount/unmount device by user click.
+    - mount/unmount device by user click.
