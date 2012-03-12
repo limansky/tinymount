@@ -1,0 +1,13 @@
+Source: tinymount
+Section: unknown
+Priority: optional
+Maintainer: Mike Limansky <mike.limansky@gmail.com>
+Build-Depends: cdbs, libqt4-dev
+Standards-version: 3.8.4
+Homepage: http://github.com/limansky/tinymount
+
+Package: tinymount
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, udisks
+Description: small UI tray tool for disk mount/unmount.
+  tinymount is a simple UI tool to mount/unmount disks using UDisks.
