@@ -26,35 +26,34 @@ static const char* NOTIFICATIONS = "Notifications";
 static const char* NTF_DEVICES = "Devices";
 static const char* NTF_MOUNT = "Mount";
 
-Settings::Settings()
-    : mShowSystemDisks(true)
-    , mDeviceNotifications(true)
-    , mMountNotifications(true)
+SettingsManager::SettingsManager()
 {
     readSettings();
 }
 
-Settings& Settings::instance()
+SettingsManager& SettingsManager::instance()
 {
-    static Settings settings;
+    static SettingsManager settings;
     return settings;
 }
 
-void Settings::readSettings()
+void SettingsManager::readSettings()
 {
     QSettings s("tinymount", "tinymount");
-    mShowSystemDisks = s.value(SHOW_SYSTEM_DISKS, true).toBool();
+    settings.showSystemDisks = s.value(SHOW_SYSTEM_DISKS, true).toBool();
 
     s.beginGroup(NOTIFICATIONS);
-    mDeviceNotifications = s.value(NTF_DEVICES, true).toBool();
-    mMountNotifications= s.value(NTF_MOUNT, true).toBool();
+    settings.deviceNotifications = s.value(NTF_DEVICES, true).toBool();
+    settings.mountNotifications= s.value(NTF_MOUNT, true).toBool();
 }
 
-void Settings::save()
+void SettingsManager::save(const Settings& newSettings)
 {
+    settings = newSettings;
+
     QSettings s("tinymount", "tinymount");
-    s.setValue(SHOW_SYSTEM_DISKS, mShowSystemDisks);
+    s.setValue(SHOW_SYSTEM_DISKS, settings.showSystemDisks);
     s.beginGroup(NOTIFICATIONS);
-    s.setValue(NTF_DEVICES, mDeviceNotifications);
-    s.setValue(NTF_MOUNT, mMountNotifications);
+    s.setValue(NTF_DEVICES, settings.deviceNotifications);
+    s.setValue(NTF_MOUNT, settings.mountNotifications);
 }

@@ -20,31 +20,29 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-class Settings
+struct Settings
+{
+    bool showSystemDisks;
+    bool deviceNotifications;
+    bool mountNotifications;
+};
+
+class SettingsManager
 {
 public:
-    static Settings& instance();
+    static SettingsManager& instance();
 
-    bool showSystemDisks() const { return mShowSystemDisks; }
-    void setShowSystemDisks(bool enabled) { mShowSystemDisks = enabled; }
+    const Settings& getSettings() const { return settings; }
+    void save(const Settings& newSettings);
 
-    bool deviceNotifications() const { return mDeviceNotifications; }
-    void setDeviceNotifications(bool enabled) { mDeviceNotifications = enabled; }
-
-    bool mountNotifications() const { return mMountNotifications; }
-    void setMountNotifications(bool enabled) { mMountNotifications = enabled; }
-
-    void save();
 private:
-    Settings();
-    Settings(const Settings&);
+    SettingsManager();
+    SettingsManager(const SettingsManager&);
 
     void readSettings();
 
 private:
-    bool mShowSystemDisks;
-    bool mDeviceNotifications;
-    bool mMountNotifications;
+    Settings settings;
 };
 
 #endif // SETTINGS_H

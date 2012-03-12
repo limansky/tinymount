@@ -39,6 +39,7 @@ public slots:
     void onDeviceRemoved(const DeviceInfo& device);
     void reloadDevices();
     void showAbout();
+    void showSettings();
 
     void onMountDone(const QString& devPath, const QString& mountPath, int status);
     void onUnmountDone(const QString& devPath, int status);

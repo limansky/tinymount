@@ -20,6 +20,7 @@
 #include "tinymounttray.h"
 #include "diskmanager.h"
 #include "settings.h"
+#include "settingsdialog.h"
 
 #include <QSystemTrayIcon>
 #include <QIcon>
@@ -122,7 +123,7 @@ void TinyMountTray::reloadDevices()
     qDeleteAll(handers);
     handers.clear();
 
-    bool showSystem = Settings::instance().showSystemDisks();
+    bool showSystem = SettingsManager::instance().getSettings().showSystemDisks;
 
     foreach (const DeviceInfoPtr d, manager->devices())
     {
@@ -153,6 +154,7 @@ void TinyMountTray::reloadDevices()
     }
 
     trayMenu->addSeparator();
+    trayMenu->addAction(tr("Settings"), this, SLOT(showSettings()));
     trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
     trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
 }
@@ -161,7 +163,7 @@ void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
     qDebug() << "Device added:" << device.name;
 
-    if (Settings::instance().deviceNotifications())
+    if (SettingsManager::instance().getSettings().deviceNotifications)
         tray->showMessage(tr("Device is added"), tr("Device %1 is added").arg(device.name));
 
     reloadDevices();
@@ -171,7 +173,7 @@ void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
 {
     qDebug() << "Device removed:" << device.name;
 
-    if (Settings::instance().deviceNotifications())
+    if (SettingsManager::instance().getSettings().deviceNotifications)
         tray->showMessage(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
 
     reloadDevices();
@@ -186,7 +188,7 @@ void TinyMountTray::onMountDone(const QString &devPath, const QString &mountPath
 
     if (DiskManager::OK == status)
     {
-        if (Settings::instance().mountNotifications())
+        if (SettingsManager::instance().getSettings().mountNotifications)
             tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(d->name).arg(mountPath));
     }
     else
@@ -204,7 +206,7 @@ void TinyMountTray::onUnmountDone(const QString &devPath, int status)
 
     if (DiskManager::OK == status)
     {
-        if (Settings::instance().mountNotifications())
+        if (SettingsManager::instance().getSettings().mountNotifications)
             tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(d->name));
     }
     else
@@ -218,6 +220,12 @@ void TinyMountTray::showAbout()
     QMessageBox::about(0, tr("TinyMount, version %1").arg(TINYMOUNT_VERSION),
                           tr("Copyright (c) 2012 Mike Limansky\n\n"
                              "Use and redistribute under terms of the GNU General Public License Version 2."));
+}
+
+void TinyMountTray::showSettings()
+{
+    SettingsDialog dlg(SettingsManager::instance().getSettings());
+    dlg.exec();
 }
 
 EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)
