@@ -42,8 +42,9 @@ struct DeviceInfo
     qulonglong size;
     QString fileSystem;
     DeviceType type;
-    bool mounted;
+    bool isMounted;
     QString udisksPath;
+    bool isSystem;
 };
 
 typedef std::tr1::shared_ptr<DeviceInfo> DeviceInfoPtr;

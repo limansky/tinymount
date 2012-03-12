@@ -19,7 +19,7 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.1.0
+VERSION = 0.1.95
 
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -39,11 +39,13 @@ QT += dbus
 SOURCES = \
     main.cpp \
     diskmanager.cpp \
-    tinymounttray.cpp
+    tinymounttray.cpp \
+    settings.cpp
 
 HEADERS = \
     diskmanager.h \
-    tinymounttray.h
+    tinymounttray.h \
+    settings.h
 
 HEADERS += \
     udisks/udisksinterface.h \
@@ -72,3 +74,5 @@ target.path = $$BINDIR
 INSTALLS = target translations
 
 DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\" DATADIR=\\\"$${DATADIR}\\\"
+
+

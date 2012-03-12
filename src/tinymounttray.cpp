@@ -19,6 +19,7 @@
 
 #include "tinymounttray.h"
 #include "diskmanager.h"
+#include "settings.h"
 
 #include <QSystemTrayIcon>
 #include <QIcon>
@@ -121,11 +122,16 @@ void TinyMountTray::reloadDevices()
     qDeleteAll(handers);
     handers.clear();
 
+    bool showSystem = Settings::instance().showSystemDisks();
+
     foreach (const DeviceInfoPtr d, manager->devices())
     {
         EventHandler * h = 0;
         QIcon icon;
-        if (d->mounted)
+
+        if (!showSystem && d->isSystem) continue;
+
+        if (d->isMounted)
         {
             UnmountHandler* uh = new UnmountHandler(d->udisksPath, *manager, this);
             connect(uh, SIGNAL(unmountDone(QString,int)), this, SLOT(onUnmountDone(QString,int)));
@@ -154,14 +160,20 @@ void TinyMountTray::reloadDevices()
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
 {
     qDebug() << "Device added:" << device.name;
-    tray->showMessage(tr("Device is added"), tr("Device %1 is added").arg(device.name));
+
+    if (Settings::instance().deviceNotifications())
+        tray->showMessage(tr("Device is added"), tr("Device %1 is added").arg(device.name));
+
     reloadDevices();
 }
 
 void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
 {
     qDebug() << "Device removed:" << device.name;
-    tray->showMessage(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
+
+    if (Settings::instance().deviceNotifications())
+        tray->showMessage(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
+
     reloadDevices();
 }
 
@@ -174,7 +186,8 @@ void TinyMountTray::onMountDone(const QString &devPath, const QString &mountPath
 
     if (DiskManager::OK == status)
     {
-        tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(d->name).arg(mountPath));
+        if (Settings::instance().mountNotifications())
+            tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(d->name).arg(mountPath));
     }
     else
     {
@@ -191,7 +204,8 @@ void TinyMountTray::onUnmountDone(const QString &devPath, int status)
 
     if (DiskManager::OK == status)
     {
-        tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(d->name));
+        if (Settings::instance().mountNotifications())
+            tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(d->name));
     }
     else
     {

@@ -154,7 +154,8 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
                       dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
                       containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
                                                                           DeviceInfo::Other;
-            d->mounted = dev.deviceIsMounted();
+            d->isMounted = dev.deviceIsMounted();
+            d->isSystem = dev.deviceIsSystemInternal();
         }
     }
 
