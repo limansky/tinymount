@@ -225,7 +225,18 @@ void TinyMountTray::showAbout()
 void TinyMountTray::showSettings()
 {
     SettingsDialog dlg(SettingsManager::instance().getSettings());
-    dlg.exec();
+
+    if (QDialog::Accepted == dlg.exec())
+    {
+        const Settings& settings = dlg.getSettings();
+        bool refreshList = settings.showSystemDisks != SettingsManager::instance().getSettings().showSystemDisks;
+        SettingsManager::instance().save(settings);
+
+        if (refreshList)
+        {
+            reloadDevices();
+        }
+    }
 }
 
 EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)
