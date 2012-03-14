@@ -23,6 +23,7 @@
 
 static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
+static const char* DEVICE_PATH_PROPNAME = "DevicePath";
 
 // Uncomment this to get verbose udisks log.
 // #define LOG_DEVICE_INFO
@@ -204,7 +205,7 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
     }
 }
 
-DiskManager::MountResult DiskManager::mountDevice(const QString& path)
+void DiskManager::mountDevice(const QString& path)
 {
     qDebug() << "mountDevice:" << path;
     DeviceMap::iterator it = deviceCache.find(path);
@@ -212,20 +213,40 @@ DiskManager::MountResult DiskManager::mountDevice(const QString& path)
     if (it == deviceCache.end())
     {
         qWarning() << "Unknown device passed. Path = " << path;
-        return MountResult(InvalidRequest, "");
+        return;
     }
 
     UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
 
-    QDBusPendingReply<QString> r = dev.FilesystemMount("", QStringList());
-
-    r.waitForFinished();
-
-    const QString& mountPath = r.isValid() ? r.value() : "";
-    return MountResult(mapErrorName(r.error()), mountPath);
+    QDBusPendingCall call = dev.FilesystemMount("", QStringList());
+    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
+    watcher->setProperty(DEVICE_PATH_PROPNAME, path);
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            this, SLOT(onMountComplete(QDBusPendingCallWatcher*)));
 }
 
-int DiskManager::unmountDevice(const QString& path)
+void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<QString> r = *call;
+
+    QString path = call->property(DEVICE_PATH_PROPNAME).toString();
+    Q_ASSERT(!path.isEmpty());
+
+    DeviceMap::iterator it = deviceCache.find(path);
+
+    if (it == deviceCache.end())
+    {
+        qWarning() << "Unknown device" << path << "is mounted";
+        return;
+    }
+
+    const QString& mountPath = r.isValid() ? r.value() : "";
+
+    emit deviceMounted(**it, mountPath, mapErrorName(r.error()));
+}
+
+
+void DiskManager::unmountDevice(const QString& path)
 {
     qDebug() << "unmountDevice:" << path;
     DeviceMap::iterator it = deviceCache.find(path);
@@ -233,14 +254,36 @@ int DiskManager::unmountDevice(const QString& path)
     if (it == deviceCache.end())
     {
         qWarning() << "Unknown device passed. Path = " << path;
-        return false;
+        return;
     }
 
     UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
 
-    QDBusPendingReply<> r = dev.FilesystemUnmount(QStringList());
+    QDBusPendingCall call = dev.FilesystemUnmount(QStringList());
+    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
 
-    r.waitForFinished();
+    watcher->setProperty(DEVICE_PATH_PROPNAME, path);
 
-    return mapErrorName(r.error());
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                     this, SLOT(onUnmountComplete(QDBusPendingCallWatcher*)));
+}
+
+void DiskManager::onUnmountComplete(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<> r = *call;
+
+    QString path = call->property(DEVICE_PATH_PROPNAME).toString();
+    Q_ASSERT(!path.isEmpty());
+
+    DeviceMap::iterator it = deviceCache.find(path);
+
+    if (it == deviceCache.end())
+    {
+        qWarning() << "Unknown device" << path << "is unmounted";
+        return;
+    }
+
+    emit deviceUnmounted(**it, mapErrorName(r.error()));
+
+    call->deleteLater();
 }

@@ -41,8 +41,8 @@ public slots:
     void showAbout();
     void showSettings();
 
-    void onMountDone(const QString& devPath, const QString& mountPath, int status);
-    void onUnmountDone(const QString& devPath, int status);
+    void onMountDone(const DeviceInfo& device, const QString& mountPath, int status);
+    void onUnmountDone(const DeviceInfo& device, int status);
 
 private:
     QSystemTrayIcon* tray;
@@ -74,9 +74,6 @@ class MountHandler : public EventHandler
 public:
     MountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
 
-signals:
-    void mountDone(const QString& devPath, const QString& mountPath, int status);
-
 protected:
     virtual void handleEvent();
 };
@@ -87,10 +84,7 @@ class UnmountHandler : public EventHandler
 public:
     UnmountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
 
-signals:
-    void unmountDone(const QString& path, int status);
-
-public slots:
+protected:
     virtual void handleEvent();
 };
 

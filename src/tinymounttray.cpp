@@ -107,6 +107,9 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
     connect(manager, SIGNAL(deviceChanged(DeviceInfo)), this, SLOT(reloadDevices()));
 
+    connect(manager, SIGNAL(deviceMounted(DeviceInfo,QString,int)), this, SLOT(onMountDone(DeviceInfo,QString,int)));
+    connect(manager, SIGNAL(deviceUnmounted(DeviceInfo,int)), this, SLOT(onUnmountDone(DeviceInfo,int)));
+
     trayMenu = new QMenu();
     reloadDevices();
 
@@ -135,14 +138,12 @@ void TinyMountTray::reloadDevices()
         if (d->isMounted)
         {
             UnmountHandler* uh = new UnmountHandler(d->udisksPath, *manager, this);
-            connect(uh, SIGNAL(unmountDone(QString,int)), this, SLOT(onUnmountDone(QString,int)));
             h = uh;
             icon = QIcon::fromTheme("media-eject");
         }
         else
         {
             MountHandler* mh = new MountHandler(d->udisksPath, *manager, this);
-            connect(mh, SIGNAL(mountDone(QString,QString,int)), this, SLOT(onMountDone(QString,QString,int)));
             h = mh;
             icon = iconForType(d->type);
         }
@@ -179,39 +180,33 @@ void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
     reloadDevices();
 }
 
-void TinyMountTray::onMountDone(const QString &devPath, const QString &mountPath, int status)
+void TinyMountTray::onMountDone(const DeviceInfo &device, const QString &mountPath, int status)
 {
-    qDebug() << "Device" << devPath << "is mounted to" << mountPath << ", status =" << status;
-
-    const DeviceInfoPtr d = manager->deviceByPath(devPath);
-    Q_ASSERT(0 != d);
+    qDebug() << "Device" << device.name << "is mounted to" << mountPath << ", status =" << status;
 
     if (DiskManager::OK == status)
     {
         if (SettingsManager::instance().getSettings().mountNotifications)
-            tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(d->name).arg(mountPath));
+            tray->showMessage(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(device.name).arg(mountPath));
     }
     else
     {
-        tray->showMessage(tr("Mount failed"), tr("%1 mounting error. %2.").arg(d->name).arg(errorToString(status)));
+        tray->showMessage(tr("Mount failed"), tr("%1 mounting error. %2.").arg(device.name).arg(errorToString(status)));
     }
 }
 
-void TinyMountTray::onUnmountDone(const QString &devPath, int status)
+void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 {
-    qDebug() << "Device" << devPath << "is unmounted, status =" << status;
-    const DeviceInfoPtr d = manager->deviceByPath(devPath);
-
-    Q_ASSERT(0 != d);
+    qDebug() << "Device" << device.name << "is unmounted, status =" << status;
 
     if (DiskManager::OK == status)
     {
         if (SettingsManager::instance().getSettings().mountNotifications)
-            tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(d->name));
+            tray->showMessage(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(device.name));
     }
     else
     {
-        tray->showMessage(tr("Unmount failed"), tr("Failed to unmount %1. %2.").arg(d->name).arg(errorToString(status)));
+        tray->showMessage(tr("Unmount failed"), tr("Failed to unmount %1. %2.").arg(device.name).arg(errorToString(status)));
     }
 }
 
@@ -258,8 +253,7 @@ MountHandler::MountHandler(const QString &id, DiskManager& diskManager, QObject 
 
 void MountHandler::handleEvent()
 {
-    DiskManager::MountResult r = manager.mountDevice(deviceId);
-    emit mountDone(deviceId, r.path, r.error);
+    manager.mountDevice(deviceId);
 }
 
 UnmountHandler::UnmountHandler(const QString &id, DiskManager& diskManager, QObject *parent)
@@ -269,6 +263,5 @@ UnmountHandler::UnmountHandler(const QString &id, DiskManager& diskManager, QObj
 
 void UnmountHandler::handleEvent()
 {
-    int err = manager.unmountDevice(deviceId);
-    emit unmountDone(deviceId, err);
+    manager.unmountDevice(deviceId);
 }

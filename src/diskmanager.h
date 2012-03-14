@@ -26,6 +26,7 @@
 
 class UDisksInterface;
 class QDBusObjectPath;
+class QDBusPendingCallWatcher;
 
 struct DeviceInfo
 {
@@ -65,18 +66,6 @@ public:
         UnknownFileSystem
     };
 
-    struct MountResult
-    {
-        MountResult(ErrorCode error, const QString& path)
-            : error(error)
-            , path(path)
-        {
-        }
-
-        ErrorCode error;
-        QString path;
-    };
-
     explicit DiskManager(QObject *parent = 0);
 
     typedef QList<DeviceInfoPtr> Devices;
@@ -84,8 +73,8 @@ public:
 
     Devices devices() const { return deviceCache.values(); }
 
-    MountResult mountDevice(const QString& path);
-    int unmountDevice(const QString& path);
+    void mountDevice(const QString& path);
+    void unmountDevice(const QString& path);
 
     const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
 
@@ -93,11 +82,16 @@ signals:
     void deviceAdded(const DeviceInfo& device);
     void deviceRemoved(const DeviceInfo& device);
     void deviceChanged(const DeviceInfo& device);
+    void deviceMounted(const DeviceInfo& device, const QString& path, int status);
+    void deviceUnmounted(const DeviceInfo& device, int status);
 
 private slots:
     void onDeviceAdded(const QDBusObjectPath& path);
     void onDeviceRemoved(const QDBusObjectPath& path);
     void onDeviceChanged(const QDBusObjectPath& path);
+
+    void onMountComplete(QDBusPendingCallWatcher* call);
+    void onUnmountComplete(QDBusPendingCallWatcher* call);
 
 private:
     DeviceInfoPtr deviceForPath(const QDBusObjectPath& path);
