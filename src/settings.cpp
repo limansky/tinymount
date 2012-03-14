@@ -21,6 +21,7 @@
 #include <QSettings>
 
 static const char* SHOW_SYSTEM_DISKS = "ShowSystemDisks";
+static const char* MOUNT_AUTOMATICALY = "MountAutomaticaly";
 
 static const char* NOTIFICATIONS = "Notifications";
 static const char* NTF_DEVICES = "Devices";
@@ -41,6 +42,7 @@ void SettingsManager::readSettings()
 {
     QSettings s("tinymount", "tinymount");
     settings.showSystemDisks = s.value(SHOW_SYSTEM_DISKS, true).toBool();
+    settings.mountAutomaticaly = s.value(MOUNT_AUTOMATICALY, false).toBool();
 
     s.beginGroup(NOTIFICATIONS);
     settings.deviceNotifications = s.value(NTF_DEVICES, true).toBool();
@@ -53,6 +55,7 @@ void SettingsManager::save(const Settings& newSettings)
 
     QSettings s("tinymount", "tinymount");
     s.setValue(SHOW_SYSTEM_DISKS, settings.showSystemDisks);
+    s.setValue(MOUNT_AUTOMATICALY, settings.mountAutomaticaly);
     s.beginGroup(NOTIFICATIONS);
     s.setValue(NTF_DEVICES, settings.deviceNotifications);
     s.setValue(NTF_MOUNT, settings.mountNotifications);

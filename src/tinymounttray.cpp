@@ -167,6 +167,9 @@ void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
     if (SettingsManager::instance().getSettings().deviceNotifications)
         tray->showMessage(tr("Device is added"), tr("Device %1 is added").arg(device.name));
 
+    if (SettingsManager::instance().getSettings().mountAutomaticaly)
+        manager->mountDevice(device.udisksPath);
+
     reloadDevices();
 }
 

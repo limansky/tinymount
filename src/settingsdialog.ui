@@ -30,7 +30,7 @@
       <item>
        <widget class="QCheckBox" name="autoMount">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Mount devices automaticaly</string>

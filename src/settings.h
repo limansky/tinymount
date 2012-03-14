@@ -25,6 +25,7 @@ struct Settings
     bool showSystemDisks;
     bool deviceNotifications;
     bool mountNotifications;
+    bool mountAutomaticaly;
 };
 
 class SettingsManager

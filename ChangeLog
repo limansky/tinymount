@@ -1,3 +1,8 @@
+TinyMount-0.1.97
+----------------
+  - Implement auto mounting.
+  - Mount/umount devices asynchronously.
+
 TinyMount-0.1.96
 ----------------
   - Add "Settings" dialog.
