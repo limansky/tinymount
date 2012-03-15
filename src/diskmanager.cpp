@@ -243,6 +243,8 @@ void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
     const QString& mountPath = r.isValid() ? r.value() : "";
 
     emit deviceMounted(**it, mountPath, mapErrorName(r.error()));
+
+    call->deleteLater();
 }
 
 
