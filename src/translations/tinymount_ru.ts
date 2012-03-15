@@ -5,14 +5,12 @@
     <name>Arguments</name>
     <message>
         <location filename="../main.cpp" line="56"/>
-        <source>Parameters:
-</source>
+        <source>Parameters:</source>
         <translation>Параметры:</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="79"/>
-        <source>Show this information
-</source>
+        <source>Show this information</source>
         <translation>Вывести эту информацию</translation>
     </message>
     <message>
