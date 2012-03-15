@@ -25,7 +25,7 @@ tray.  Right click on the icon opens menu with the devices list. Click on
 already mounted device performs device unmounting. If the device is not mounted
 click on it to mount.
 
-If you need to define icon theme for the program use --iconTheme command line
+If you need to define icon theme for the program use `--iconTheme` command line
 parameter.
 
 Other settings stored in ~/.config/tinymount/tinymount.conf file, but also
@@ -55,9 +55,9 @@ which contains debian folder. Use `dpkg-buildpackage` to build deb package.
 
 TinyMount uses qmake, so the building procedure is quite simple:
 
- 1. qmake
- 2. make
- 3. make install
+ 1. `qmake`
+ 2. `make`
+ 3. `make install`
 
 By default TinyMount is installed to /usr/local/bin. If you need to change a location
-pass PREFIX parameter to qmake call (e.g. qmake PREFIX=/bin to install in /usr/bin).
+pass PREFIX parameter to qmake call (e.g. `qmake PREFIX=/bin` to install in /usr/bin).
