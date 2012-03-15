@@ -19,6 +19,11 @@ public:
 
     Settings getSettings();
 
+private slots:
+    void on_itemFormat_textChanged(const QString &text);
+
+    void on_resetFormatButton_clicked();
+
 private:
     Ui::SettingsDialog *ui;
 };

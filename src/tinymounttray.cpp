@@ -135,22 +135,25 @@ void TinyMountTray::reloadDevices()
 
         if (!showSystem && d->isSystem) continue;
 
+        QString text = SettingsManager::instance().getSettings().itemFormat;
+        text.replace("%name%", d->name).replace("%fs%", d->fileSystem).replace("%size%", formatFileSize(d->size));
+
         if (d->isMounted)
         {
             UnmountHandler* uh = new UnmountHandler(d->udisksPath, *manager, this);
             h = uh;
             icon = QIcon::fromTheme("media-eject");
+            text.replace("%mounted%", d->mountPoint);
         }
         else
         {
             MountHandler* mh = new MountHandler(d->udisksPath, *manager, this);
             h = mh;
             icon = iconForType(d->type);
+            text.replace("%mounted%", "");
         }
 
-        trayMenu->addAction(icon,
-                            QString("%1 (%2) %3").arg(d->name).arg(d->fileSystem).arg(formatFileSize(d->size)),
-                            h, SLOT(onEventHandled()));
+        trayMenu->addAction(icon, text, h, SLOT(onEventHandled()));
         handers << h;
     }
 
@@ -227,7 +230,9 @@ void TinyMountTray::showSettings()
     if (QDialog::Accepted == dlg.exec())
     {
         const Settings& settings = dlg.getSettings();
-        bool refreshList = settings.showSystemDisks != SettingsManager::instance().getSettings().showSystemDisks;
+        const Settings& oldSettings = SettingsManager::instance().getSettings();
+        bool refreshList = settings.showSystemDisks != oldSettings.showSystemDisks
+                || settings.itemFormat != oldSettings.itemFormat;
         SettingsManager::instance().save(settings);
 
         if (refreshList)

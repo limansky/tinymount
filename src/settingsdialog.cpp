@@ -12,6 +12,8 @@ SettingsDialog::SettingsDialog(const Settings& settings, QWidget *parent) :
 
     ui->deviceNotify->setChecked(settings.deviceNotifications);
     ui->mountNotify->setChecked(settings.mountNotifications);
+
+    ui->itemFormat->setText(settings.itemFormat);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -24,7 +26,20 @@ Settings SettingsDialog::getSettings()
     Settings settings;
     settings.showSystemDisks = ui->systemDisks->isChecked();
     settings.mountAutomaticaly = ui->autoMount->isChecked();
+
     settings.deviceNotifications = ui->deviceNotify->isChecked();
     settings.mountNotifications = ui->deviceNotify->isChecked();
+
+    settings.itemFormat = ui->itemFormat->text();
     return settings;
+}
+
+void SettingsDialog::on_itemFormat_textChanged(const QString &text)
+{
+    ui->buttonBox->setEnabled(!text.isEmpty());
+}
+
+void SettingsDialog::on_resetFormatButton_clicked()
+{
+    ui->itemFormat->setText(SettingsManager::defaultItemFormat());
 }

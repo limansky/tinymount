@@ -156,6 +156,7 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
                       containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
                                                                           DeviceInfo::Other;
             d->isMounted = dev.deviceIsMounted();
+            if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
             d->isSystem = dev.deviceIsSystemInternal();
         }
     }

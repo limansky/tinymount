@@ -20,18 +20,23 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QString>
+
 struct Settings
 {
     bool showSystemDisks;
     bool deviceNotifications;
     bool mountNotifications;
     bool mountAutomaticaly;
+    QString itemFormat;
 };
 
 class SettingsManager
 {
 public:
     static SettingsManager& instance();
+
+    static QString defaultItemFormat();
 
     const Settings& getSettings() const { return settings; }
     void save(const Settings& newSettings);

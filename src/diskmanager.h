@@ -44,6 +44,7 @@ struct DeviceInfo
     QString fileSystem;
     DeviceType type;
     bool isMounted;
+    QString mountPoint;
     QString udisksPath;
     bool isSystem;
 };
