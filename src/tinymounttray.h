@@ -41,6 +41,9 @@ public slots:
     void showAbout();
     void showSettings();
 
+    void onMount();
+    void onUnmount();
+
     void onMountDone(const DeviceInfo& device, const QString& mountPath, int status);
     void onUnmountDone(const DeviceInfo& device, int status);
 
@@ -48,44 +51,6 @@ private:
     QSystemTrayIcon* tray;
     QMenu* trayMenu;
     DiskManager* manager;
-    QList<EventHandler*> handers;
-};
-
-class EventHandler : public QObject
-{
-    Q_OBJECT
-public:
-    EventHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
-
-public slots:
-    void onEventHandled();
-
-protected:
-    virtual void handleEvent() = 0;
-
-protected:
-    QString deviceId;
-    DiskManager& manager;
-};
-
-class MountHandler : public EventHandler
-{
-    Q_OBJECT
-public:
-    MountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
-
-protected:
-    virtual void handleEvent();
-};
-
-class UnmountHandler : public EventHandler
-{
-    Q_OBJECT
-public:
-    UnmountHandler(const QString& id, DiskManager& diskManager, QObject* parent = 0);
-
-protected:
-    virtual void handleEvent();
 };
 
 #endif // TINYMOUNTTRAY_H

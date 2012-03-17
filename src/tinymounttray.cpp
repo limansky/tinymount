@@ -123,38 +123,41 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 void TinyMountTray::reloadDevices()
 {
     trayMenu->clear();
-    qDeleteAll(handers);
-    handers.clear();
 
     bool showSystem = SettingsManager::instance().getSettings().showSystemDisks;
 
     foreach (const DeviceInfoPtr d, manager->devices())
     {
-        EventHandler * h = 0;
-        QIcon icon;
-
         if (!showSystem && d->isSystem) continue;
 
+        QIcon icon;
         QString text = SettingsManager::instance().getSettings().itemFormat;
         text.replace("%name%", d->name).replace("%fs%", d->fileSystem).replace("%size%", formatFileSize(d->size));
 
         if (d->isMounted)
         {
-            UnmountHandler* uh = new UnmountHandler(d->udisksPath, *manager, this);
-            h = uh;
             icon = QIcon::fromTheme("media-eject");
             text.replace("%mounted%", d->mountPoint);
         }
         else
         {
-            MountHandler* mh = new MountHandler(d->udisksPath, *manager, this);
-            h = mh;
             icon = iconForType(d->type);
             text.replace("%mounted%", "");
         }
 
-        trayMenu->addAction(icon, text, h, SLOT(onEventHandled()));
-        handers << h;
+        QAction* action = new QAction(icon, text, trayMenu);
+        action->setData(d->udisksPath);
+
+        if (d->isMounted)
+        {
+            connect(action, SIGNAL(triggered()), this, SLOT(onUnmount()));
+        }
+        else
+        {
+            connect(action, SIGNAL(triggered()), this, SLOT(onMount()));
+        }
+
+        trayMenu->addAction(action);
     }
 
     trayMenu->addSeparator();
@@ -184,6 +187,26 @@ void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
         tray->showMessage(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
 
     reloadDevices();
+}
+
+void TinyMountTray::onMount()
+{
+    QAction* a = qobject_cast<QAction*>(sender());
+    Q_ASSERT(a);
+
+    const QString& path = a->data().toString();
+
+    manager->mountDevice(path);
+}
+
+void TinyMountTray::onUnmount()
+{
+    QAction* a = qobject_cast<QAction*>(sender());
+    Q_ASSERT(a);
+
+    const QString& path = a->data().toString();
+
+    manager->unmountDevice(path);
 }
 
 void TinyMountTray::onMountDone(const DeviceInfo &device, const QString &mountPath, int status)
@@ -240,36 +263,4 @@ void TinyMountTray::showSettings()
             reloadDevices();
         }
     }
-}
-
-EventHandler::EventHandler(const QString &id, DiskManager &diskManager, QObject *parent)
-    : QObject(parent)
-    , deviceId(id)
-    , manager(diskManager)
-{
-}
-
-void EventHandler::onEventHandled()
-{
-    handleEvent();
-}
-
-MountHandler::MountHandler(const QString &id, DiskManager& diskManager, QObject *parent)
-    : EventHandler(id, diskManager, parent)
-{
-}
-
-void MountHandler::handleEvent()
-{
-    manager.mountDevice(deviceId);
-}
-
-UnmountHandler::UnmountHandler(const QString &id, DiskManager& diskManager, QObject *parent)
-    : EventHandler(id, diskManager, parent)
-{
-}
-
-void UnmountHandler::handleEvent()
-{
-    manager.unmountDevice(deviceId);
 }
