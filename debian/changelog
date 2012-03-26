@@ -1,3 +1,9 @@
+tinymount (0.2.0) unstable; urgency=low
+
+  * Second release. With settings, automounting and custom device formatting.
+
+ -- Mike Limansky <mike.limansky@gmail.com>  Mon, 26 Mar 2012 09:28:03 +0000
+
 tinymount (0.1.0) unstable; urgency=low
 
   * Initial release.

@@ -17,40 +17,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef TINYMOUNTTRAY_H
-#define TINYMOUNTTRAY_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
-#include <QObject>
+#include <QString>
 
-class QSystemTrayIcon;
-class QMenu;
-class DeviceInfo;
-class DiskManager;
-class EventHandler;
-
-class TinyMountTray : public QObject
+struct Settings
 {
-    Q_OBJECT
-public:
-    explicit TinyMountTray(QObject *parent = 0);
-
-public slots:
-    void onDeviceAdded(const DeviceInfo& device);
-    void onDeviceRemoved(const DeviceInfo& device);
-    void reloadDevices();
-    void showAbout();
-    void showSettings();
-
-    void onMount();
-    void onUnmount();
-
-    void onMountDone(const DeviceInfo& device, const QString& mountPath, int status);
-    void onUnmountDone(const DeviceInfo& device, int status);
-
-private:
-    QSystemTrayIcon* tray;
-    QMenu* trayMenu;
-    DiskManager* manager;
+    bool showSystemDisks;
+    bool deviceNotifications;
+    bool mountNotifications;
+    bool mountAutomaticaly;
+    QString itemFormat;
 };
 
-#endif // TINYMOUNTTRAY_H
+class SettingsManager
+{
+public:
+    static SettingsManager& instance();
+
+    static QString defaultItemFormat();
+
+    const Settings& getSettings() const { return settings; }
+    void save(const Settings& newSettings);
+
+private:
+    SettingsManager();
+    SettingsManager(const SettingsManager&);
+
+    void readSettings();
+
+private:
+    Settings settings;
+};
+
+#endif // SETTINGS_H

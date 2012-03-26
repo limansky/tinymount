@@ -53,7 +53,7 @@ namespace {
             cout << usagePrefix << "\n";
         }
 
-        cout << qApp->translate("Arguments", "Parameters:\n");
+        cout << qApp->translate("Arguments", "Parameters:") << "\n";
         QStringList args;
         int arglen = 0;
 
@@ -76,7 +76,7 @@ namespace {
         }
 
         cout << "\t--" << usageOption << QString(arglen - usageOption.length(), ' ')
-             << "\t" << qApp->translate("Arguments", "Show this information\n");
+             << "\t" << qApp->translate("Arguments", "Show this information") << "\n";
 
         cout.flush();
 

@@ -1,6 +1,16 @@
+TinyMount-0.2.0
+---------------
+  Second release (stabilized after several betas):
+  - Add config file
+  - Add "Settings" dialog.
+  - Settings to hide system disks, hide notifications (except errors).
+  - Mount/umount devices asynchronously.
+  - Auto mounting.
+  - Add item format setting.
+
 TinyMount-0.1.0
 ---------------
   First release.
   Features supported:
     - notify on device connected/disconnected.
-	- mount/unmount device by user click.
+    - mount/unmount device by user click.

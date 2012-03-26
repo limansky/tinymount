@@ -2,6 +2,7 @@ Makefile*
 *.o
 moc_*
 qrc_*
+ui_*
 *.pro.user
 tinymount
 *.qm
