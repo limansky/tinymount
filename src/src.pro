@@ -19,7 +19,7 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.1.98
+VERSION = 0.2.0
 
 DEPENDPATH += .
 INCLUDEPATH += .

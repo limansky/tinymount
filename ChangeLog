@@ -1,23 +1,12 @@
-TinyMount-0.1.98
-----------------
-  - Add item format setting.
-
-TinyMount-0.1.97
-----------------
-  - Implement auto mounting.
-  - Mount/umount devices asynchronously.
-
-TinyMount-0.1.96
-----------------
+TinyMount-0.2.0
+---------------
+  Second release (stabilized after several betas):
+  - Add config file
   - Add "Settings" dialog.
-
-TinyMount-0.1.95
-----------------
-  First 0.2 alpfa
-  New features:
-    - add config file
-    - support settings to hide system disks, hide notifications (except
-      errors).
+  - Settings to hide system disks, hide notifications (except errors).
+  - Mount/umount devices asynchronously.
+  - Auto mounting.
+  - Add item format setting.
 
 TinyMount-0.1.0
 ---------------
