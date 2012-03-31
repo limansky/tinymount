@@ -121,7 +121,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../settingsdialog.ui" line="87"/>
         <source>Notify when device added/removed</source>
-        <translation>Уведомалять о добавлении устройства</translation>
+        <translation>Уведомлять о добавлении устройства</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="94"/>
