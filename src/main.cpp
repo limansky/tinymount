@@ -24,6 +24,10 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 
+#ifdef WITH_LIBNOTIFY
+#include <glib-object.h>
+#endif
+
 #include "tinymounttray.h"
 
 namespace {
@@ -127,6 +131,10 @@ static const QList<Option> SUPPORTED_OPTIONS = QList<Option>()
 
 int main(int argc, char** argv)
 {
+#ifdef WITH_LIBNOTIFY
+    g_type_init();
+#endif
+
     QApplication app(argc, argv);
 
     if (!QSystemTrayIcon::isSystemTrayAvailable())
