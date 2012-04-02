@@ -27,6 +27,10 @@ static const char* ITEM_FORMAT = "ItemFormat";
 static const char* NOTIFICATIONS = "Notifications";
 static const char* NTF_DEVICES = "Devices";
 static const char* NTF_MOUNT = "Mount";
+#ifdef WITH_LIBNOTIFY
+static const char* USE_LIBNOTIFY = "UseLibNotify";
+#endif
+
 
 static const char* DEFAULT_ITEM_FORMAT = "%name% (%fs%) %size%";
 
@@ -51,6 +55,9 @@ void SettingsManager::readSettings()
     s.beginGroup(NOTIFICATIONS);
     settings.deviceNotifications = s.value(NTF_DEVICES, true).toBool();
     settings.mountNotifications= s.value(NTF_MOUNT, true).toBool();
+#ifdef WITH_LIBNOTIFY
+    settings.useLibnotify = s.value(USE_LIBNOTIFY, true).toBool();
+#endif
 }
 
 void SettingsManager::save(const Settings& newSettings)
@@ -64,6 +71,9 @@ void SettingsManager::save(const Settings& newSettings)
     s.beginGroup(NOTIFICATIONS);
     s.setValue(NTF_DEVICES, settings.deviceNotifications);
     s.setValue(NTF_MOUNT, settings.mountNotifications);
+#ifdef WITH_LIBNOTIFY
+    s.setValue(USE_LIBNOTIFY, settings.useLibnotify);
+#endif
 }
 
 QString SettingsManager::defaultItemFormat()

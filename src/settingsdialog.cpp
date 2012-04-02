@@ -14,6 +14,11 @@ SettingsDialog::SettingsDialog(const Settings& settings, QWidget *parent) :
     ui->mountNotify->setChecked(settings.mountNotifications);
 
     ui->itemFormat->setText(settings.itemFormat);
+#ifdef WITH_LIBNOTIFY
+    useLibNotify = new QCheckBox(tr("Use system notifications"));
+    useLibNotify->setChecked(settings.useLibnotify);
+    ui->notifyGroupBox->layout()->addWidget(useLibNotify);
+#endif
 }
 
 SettingsDialog::~SettingsDialog()
@@ -29,6 +34,10 @@ Settings SettingsDialog::getSettings()
 
     settings.deviceNotifications = ui->deviceNotify->isChecked();
     settings.mountNotifications = ui->deviceNotify->isChecked();
+
+#ifdef WITH_LIBNOTIFY
+    settings.useLibnotify = useLibNotify->isChecked();
+#endif
 
     settings.itemFormat = ui->itemFormat->text();
     return settings;

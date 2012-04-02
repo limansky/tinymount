@@ -28,6 +28,9 @@ struct Settings
     bool deviceNotifications;
     bool mountNotifications;
     bool mountAutomaticaly;
+#ifdef WITH_LIBNOTIFY
+    bool useLibnotify;
+#endif
     QString itemFormat;
 };
 

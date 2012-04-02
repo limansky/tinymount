@@ -283,7 +283,14 @@ void TinyMountTray::showSettings()
 void TinyMountTray::showNotification(const QString& title, const QString &message)
 {
 #ifdef WITH_LIBNOTIFY
-    notifier->showNotification(title, message);
+    if (SettingsManager::instance().getSettings().useLibnotify)
+    {
+        notifier->showNotification(title, message);
+    }
+    else
+    {
+        tray->showMessage(title, message);
+    }
 #else
     tray->showMessage(title, message);
 #endif
