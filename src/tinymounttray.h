@@ -53,7 +53,7 @@ public slots:
     void onUnmountDone(const DeviceInfo& device, int status);
 
 private:
-    void showNotification(const QString& title, const QString &message);
+    void showNotification(const QString& title, const QString &message, const QString &icon);
 
 private:
     QSystemTrayIcon* tray;

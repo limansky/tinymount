@@ -32,9 +32,11 @@ LibNotifier::~LibNotifier()
     notify_uninit();
 }
 
-void LibNotifier::showNotification(const QString& title, const QString& message)
+void LibNotifier::showNotification(const QString& title, const QString& message, const QString& icon)
 {
-    NotifyNotification* n = notify_notification_new(title.toUtf8().constData(), message.toUtf8().constData(), 0);
+    NotifyNotification* n = notify_notification_new(title.toUtf8().constData(),
+                                                    message.toUtf8().constData(),
+                                                    icon.toUtf8().constData());
 
     GError* err = 0;
     notify_notification_show(n, &err);

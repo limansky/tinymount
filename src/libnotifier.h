@@ -28,7 +28,7 @@ public:
     explicit LibNotifier(const QString& appname);
     ~LibNotifier();
 
-    void showNotification(const QString& title, const QString& message);
+    void showNotification(const QString& title, const QString& message, const QString &icon);
 };
 
 #endif // LIBNOTIFIER_H

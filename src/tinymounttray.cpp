@@ -34,22 +34,22 @@
 #include <QMessageBox>
 
 namespace {
-    QIcon iconForType (DeviceInfo::DeviceType type)
+    QString iconNameForType (DeviceInfo::DeviceType type)
     {
         switch (type)
         {
         case DeviceInfo::CD:
-            return QIcon::fromTheme("media-optical");
+            return "media-optical";
         case DeviceInfo::Flash:
         case DeviceInfo::Other:
-            return QIcon::fromTheme("media-flash");
+            return "media-flash";
         case DeviceInfo::Floppy:
-            return QIcon::fromTheme("media-floppy");
+            return "media-floppy";
         case DeviceInfo::HDD:
-            return QIcon::fromTheme("drive-harddisk");
+            return "drive-harddisk";
         }
 
-        return QIcon();
+        return QString();
     }
 
     QString formatFileSize(qulonglong size)
@@ -156,7 +156,7 @@ void TinyMountTray::reloadDevices()
         }
         else
         {
-            icon = iconForType(d->type);
+            icon = QIcon::fromTheme(iconNameForType(d->type));
             text.replace("%mounted%", "");
         }
 
@@ -186,7 +186,9 @@ void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
     qDebug() << "Device added:" << device.name;
 
     if (SettingsManager::instance().getSettings().deviceNotifications)
-        showNotification(tr("Device is added"), tr("Device %1 is added").arg(device.name));
+        showNotification(tr("Device is added"),
+                         tr("Device %1 is added").arg(device.name),
+                         iconNameForType(device.type));
 
     if (SettingsManager::instance().getSettings().mountAutomaticaly)
         manager->mountDevice(device.udisksPath);
@@ -199,7 +201,9 @@ void TinyMountTray::onDeviceRemoved(const DeviceInfo& device)
     qDebug() << "Device removed:" << device.name;
 
     if (SettingsManager::instance().getSettings().deviceNotifications)
-        showNotification(tr("Device is removed"), tr("Device %1 is removed").arg(device.name));
+        showNotification(tr("Device is removed"),
+                         tr("Device %1 is removed").arg(device.name),
+                         iconNameForType(device.type));
 
     reloadDevices();
 }
@@ -231,11 +235,15 @@ void TinyMountTray::onMountDone(const DeviceInfo &device, const QString &mountPa
     if (DiskManager::OK == status)
     {
         if (SettingsManager::instance().getSettings().mountNotifications)
-            showNotification(tr("Device is mounted"), tr("%1 is mounted to %2.").arg(device.name).arg(mountPath));
+            showNotification(tr("Device is mounted"),
+                             tr("%1 is mounted to %2.").arg(device.name).arg(mountPath),
+                             iconNameForType(device.type));
     }
     else
     {
-        showNotification(tr("Mount failed"), tr("%1 mounting error. %2.").arg(device.name).arg(errorToString(status)));
+        showNotification(tr("Mount failed"),
+                         tr("%1 mounting error. %2.").arg(device.name).arg(errorToString(status)),
+                         "dialog-error");
     }
 }
 
@@ -246,11 +254,15 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
     if (DiskManager::OK == status)
     {
         if (SettingsManager::instance().getSettings().mountNotifications)
-            showNotification(tr("Device is unmounted"), tr("%1 is unmounted successfuly.").arg(device.name));
+            showNotification(tr("Device is unmounted"),
+                             tr("%1 is unmounted successfuly.").arg(device.name),
+                             iconNameForType(device.type));
     }
     else
     {
-        showNotification(tr("Unmount failed"), tr("Failed to unmount %1. %2.").arg(device.name).arg(errorToString(status)));
+        showNotification(tr("Unmount failed"),
+                         tr("Failed to unmount %1. %2.").arg(device.name).arg(errorToString(status)),
+                         "dialog-error");
     }
 }
 
@@ -280,18 +292,19 @@ void TinyMountTray::showSettings()
     }
 }
 
-void TinyMountTray::showNotification(const QString& title, const QString &message)
+void TinyMountTray::showNotification(const QString& title, const QString &message, const QString& icon)
 {
 #ifdef WITH_LIBNOTIFY
     if (SettingsManager::instance().getSettings().useLibnotify)
     {
-        notifier->showNotification(title, message);
+        notifier->showNotification(title, message, icon);
     }
     else
     {
         tray->showMessage(title, message);
     }
 #else
+    Q_UNUSED(icon);
     tray->showMessage(title, message);
 #endif
 }
