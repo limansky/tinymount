@@ -28,11 +28,16 @@ class DeviceInfo;
 class DiskManager;
 class EventHandler;
 
+#ifdef WITH_LIBNOTIFY
+class LibNotifier;
+#endif
+
 class TinyMountTray : public QObject
 {
     Q_OBJECT
 public:
     explicit TinyMountTray(QObject *parent = 0);
+    virtual ~TinyMountTray();
 
 public slots:
     void onDeviceAdded(const DeviceInfo& device);
@@ -48,9 +53,15 @@ public slots:
     void onUnmountDone(const DeviceInfo& device, int status);
 
 private:
+    void showNotification(const QString& title, const QString &message, const QString &icon);
+
+private:
     QSystemTrayIcon* tray;
     QMenu* trayMenu;
     DiskManager* manager;
+#ifdef WITH_LIBNOTIFY
+    LibNotifier* notifier;
+#endif
 };
 
 #endif // TINYMOUNTTRAY_H

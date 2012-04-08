@@ -19,10 +19,12 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.2.0
+VERSION = 0.2.2
 
 DEPENDPATH += .
 INCLUDEPATH += .
+
+QMAKE_CXXFLAGS += -Wall -Werror
 
 CONFIG += debug_and_release
 
@@ -60,6 +62,19 @@ SOURCES += \
 RESOURCES += tinymount.qrc
 
 TRANSLATIONS = translations/tinymount_ru.ts
+
+# CONFIG += with_libnotify
+
+with_libnotify {
+    DEFINES += WITH_LIBNOTIFY
+    CONFIG += link_pkgconfig
+    !system(pkg-config --exists libnotify) {
+        error(libnotify is not found)
+    }
+    PKGCONFIG = libnotify
+    HEADERS += libnotifier.h
+    SOURCES += libnotifier.cpp
+}
 
 updateqm.input = TRANSLATIONS
 updateqm.output = ${QMAKE_FILE_BASE}.qm

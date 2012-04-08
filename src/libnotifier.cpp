@@ -17,41 +17,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
-
+#include "libnotifier.h"
+#include <libnotify/notify.h>
 #include <QString>
+#include <QDebug>
 
-struct Settings
+LibNotifier::LibNotifier(const QString &appname)
 {
-    bool showSystemDisks;
-    bool deviceNotifications;
-    bool mountNotifications;
-    bool mountAutomaticaly;
-#ifdef WITH_LIBNOTIFY
-    bool useLibnotify;
-#endif
-    QString itemFormat;
-};
+    notify_init(appname.toUtf8().constData());
+}
 
-class SettingsManager
+LibNotifier::~LibNotifier()
 {
-public:
-    static SettingsManager& instance();
+    notify_uninit();
+}
 
-    static QString defaultItemFormat();
+void LibNotifier::showNotification(const QString& title, const QString& message, const QString& icon)
+{
+    NotifyNotification* n = notify_notification_new(title.toUtf8().constData(),
+                                                    message.toUtf8().constData(),
+                                                    icon.toUtf8().constData());
 
-    const Settings& getSettings() const { return settings; }
-    void save(const Settings& newSettings);
+    GError* err = 0;
+    notify_notification_show(n, &err);
 
-private:
-    SettingsManager();
-    SettingsManager(const SettingsManager&);
+    if (err)
+    {
+        qCritical() << "Unable to show notification:" << err->message;
+        g_error_free(err);
+    }
 
-    void readSettings();
-
-private:
-    Settings settings;
-};
-
-#endif // SETTINGS_H
+    g_object_unref(n);
+}

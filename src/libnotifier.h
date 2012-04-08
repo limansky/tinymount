@@ -17,41 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef LIBNOTIFIER_H
+#define LIBNOTIFIER_H
 
-#include <QString>
+class QString;
 
-struct Settings
-{
-    bool showSystemDisks;
-    bool deviceNotifications;
-    bool mountNotifications;
-    bool mountAutomaticaly;
-#ifdef WITH_LIBNOTIFY
-    bool useLibnotify;
-#endif
-    QString itemFormat;
-};
-
-class SettingsManager
+class LibNotifier
 {
 public:
-    static SettingsManager& instance();
+    explicit LibNotifier(const QString& appname);
+    ~LibNotifier();
 
-    static QString defaultItemFormat();
-
-    const Settings& getSettings() const { return settings; }
-    void save(const Settings& newSettings);
-
-private:
-    SettingsManager();
-    SettingsManager(const SettingsManager&);
-
-    void readSettings();
-
-private:
-    Settings settings;
+    void showNotification(const QString& title, const QString& message, const QString &icon);
 };
 
-#endif // SETTINGS_H
+#endif // LIBNOTIFIER_H

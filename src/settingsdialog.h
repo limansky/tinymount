@@ -8,6 +8,9 @@ namespace Ui {
 }
 
 class Settings;
+#ifdef WITH_LIBNOTIFY
+class QCheckBox;
+#endif
 
 class SettingsDialog : public QDialog
 {
@@ -26,6 +29,9 @@ private slots:
 
 private:
     Ui::SettingsDialog *ui;
+#ifdef WITH_LIBNOTIFY
+    QCheckBox* useLibNotify;
+#endif
 };
 
 #endif // SETTINGSDIALOG_H

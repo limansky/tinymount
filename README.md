@@ -45,6 +45,10 @@ other architectures.
 If you need help in using custom ebuilds see overlays guide:
 http://www.gentoo.org/proj/en/overlays/userguide.xml
 
+USE flags:
+
+ * libnotify - turns libnotify support on/off.
+
 ### Debian/Ubuntu
 
 Use deb files attached to the TinyMount page. If you need to build latest version,
@@ -61,3 +65,6 @@ TinyMount uses qmake, so the building procedure is quite simple:
 
 By default TinyMount is installed to /usr/local/bin. If you need to change a location
 pass PREFIX parameter to qmake call (e.g. `qmake PREFIX=/bin` to install in /usr/bin).
+
+If you want to enable libnotify support run qmake with CONFIG+=with_libnotify
+parameter.
