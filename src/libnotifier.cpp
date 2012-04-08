@@ -34,9 +34,24 @@ LibNotifier::~LibNotifier()
 
 void LibNotifier::showNotification(const QString& title, const QString& message, const QString& icon)
 {
+
+#ifdef NOTIFY_CHECK_VERSION
+#if NOTIFY_CHECK_VERSION (0, 7, 0)
     NotifyNotification* n = notify_notification_new(title.toUtf8().constData(),
                                                     message.toUtf8().constData(),
                                                     icon.toUtf8().constData());
+#else
+    NotifyNotification* n = notify_notification_new(title.toUtf8().constData(),
+                                                    message.toUtf8().constData(),
+                                                    icon.toUtf8().constData(),
+                                                    NULL);
+#endif
+#else
+    NotifyNotification* n = notify_notification_new(title.toUtf8().constData(),
+                                                    message.toUtf8().constData(),
+                                                    icon.toUtf8().constData(),
+                                                    NULL);
+#endif
 
     GError* err = 0;
     notify_notification_show(n, &err);
