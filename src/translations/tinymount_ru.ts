@@ -23,8 +23,8 @@
     <name>Errors</name>
     <message>
         <location filename="../tinymounttray.cpp" line="77"/>
-        <source>Communication error</source>
-        <translation type="unfinished"></translation>
+        <source>DBus error</source>
+        <translation type="unfinished">Ошибка DBus</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="80"/>
@@ -138,7 +138,7 @@ p, li { white-space: pre-wrap; }
     <name>TinyMountTray</name>
     <message>
         <location filename="../main.cpp" line="156"/>
-        <location filename="../tinymounttray.cpp" line="259"/>
+        <location filename="../tinymounttray.cpp" line="271"/>
         <source>TinyMount, version %1</source>
         <translation>TinyMount, версия %1</translation>
     </message>
@@ -158,47 +158,47 @@ p, li { white-space: pre-wrap; }
         <translation>Устройство добавлено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="189"/>
+        <location filename="../tinymounttray.cpp" line="190"/>
         <source>Device %1 is added</source>
         <translation>Добавлено устройство %1</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="202"/>
+        <location filename="../tinymounttray.cpp" line="204"/>
         <source>Device is removed</source>
         <translation>Устройство удалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="202"/>
+        <location filename="../tinymounttray.cpp" line="205"/>
         <source>Device %1 is removed</source>
         <translation>Устройство %1 удалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="234"/>
+        <location filename="../tinymounttray.cpp" line="238"/>
         <source>Device is mounted</source>
         <translation>Устройство смонтировано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="234"/>
+        <location filename="../tinymounttray.cpp" line="239"/>
         <source>%1 is mounted to %2.</source>
         <translation>%1 смонтирован в %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="238"/>
+        <location filename="../tinymounttray.cpp" line="245"/>
         <source>%1 mounting error. %2.</source>
         <translation>Не могу смонтировать %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="249"/>
+        <location filename="../tinymounttray.cpp" line="258"/>
         <source>%1 is unmounted successfuly.</source>
         <translation>%1 успешно отмонтирован.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="253"/>
+        <location filename="../tinymounttray.cpp" line="264"/>
         <source>Failed to unmount %1. %2.</source>
         <translation>Не могу отмонтировать %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="238"/>
+        <location filename="../tinymounttray.cpp" line="244"/>
         <source>Mount failed</source>
         <translation>Ошибка монтирования</translation>
     </message>
@@ -208,17 +208,17 @@ p, li { white-space: pre-wrap; }
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="249"/>
+        <location filename="../tinymounttray.cpp" line="257"/>
         <source>Device is unmounted</source>
         <translation>Устройство отмонтировано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="253"/>
+        <location filename="../tinymounttray.cpp" line="263"/>
         <source>Unmount failed</source>
         <translation>Ошибка размонтирования</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="260"/>
+        <location filename="../tinymounttray.cpp" line="272"/>
         <source>Copyright (c) 2012 Mike Limansky
 
 Use and redistribute under terms of the GNU General Public License Version 2.</source>
