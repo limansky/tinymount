@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>419</width>
-    <height>265</height>
+    <height>267</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,13 @@
        <widget class="QCheckBox" name="systemDisks">
         <property name="text">
          <string>Show system disks</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="hideIcon">
+        <property name="text">
+         <string>Hide icon if there are no devices</string>
         </property>
        </widget>
       </item>
@@ -112,7 +119,10 @@ p, li { white-space: pre-wrap; }
  </widget>
  <tabstops>
   <tabstop>systemDisks</tabstop>
+  <tabstop>hideIcon</tabstop>
   <tabstop>autoMount</tabstop>
+  <tabstop>itemFormat</tabstop>
+  <tabstop>resetFormatButton</tabstop>
   <tabstop>deviceNotify</tabstop>
   <tabstop>mountNotify</tabstop>
   <tabstop>buttonBox</tabstop>

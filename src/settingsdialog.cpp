@@ -8,6 +8,7 @@ SettingsDialog::SettingsDialog(const Settings& settings, QWidget *parent) :
 {
     ui->setupUi(this);
     ui->systemDisks->setChecked(settings.showSystemDisks);
+    ui->hideIcon->setChecked(settings.hideIcon);
     ui->autoMount->setChecked(settings.mountAutomaticaly);
 
     ui->deviceNotify->setChecked(settings.deviceNotifications);
@@ -30,6 +31,7 @@ Settings SettingsDialog::getSettings()
 {
     Settings settings;
     settings.showSystemDisks = ui->systemDisks->isChecked();
+    settings.hideIcon = ui->hideIcon->isChecked();
     settings.mountAutomaticaly = ui->autoMount->isChecked();
 
     settings.deviceNotifications = ui->deviceNotify->isChecked();
