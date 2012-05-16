@@ -1,3 +1,9 @@
+tinymount (0.2.4) unstable; urgency=low
+
+  * New version. With tray icon hiding.
+
+ -- Mike Limansky <mike.limansky@gmail.com>  Fri, 11 May 2012 17:32:52 +0400
+
 tinymount (0.2.2) unstable; urgency=low
 
   * New version. With libnotify support.

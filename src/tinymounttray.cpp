@@ -140,10 +140,13 @@ void TinyMountTray::reloadDevices()
     trayMenu->clear();
 
     bool showSystem = SettingsManager::instance().getSettings().showSystemDisks;
+    bool hasDevices = false;
 
     foreach (const DeviceInfoPtr d, manager->devices())
     {
         if (!showSystem && d->isSystem) continue;
+
+        hasDevices = true;
 
         QIcon icon;
         QString text = SettingsManager::instance().getSettings().itemFormat;
@@ -179,6 +182,8 @@ void TinyMountTray::reloadDevices()
     trayMenu->addAction(tr("Settings"), this, SLOT(showSettings()));
     trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
     trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
+
+    if (SettingsManager::instance().getSettings().hideIcon) tray->setVisible(hasDevices);
 }
 
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
@@ -282,7 +287,8 @@ void TinyMountTray::showSettings()
         const Settings& settings = dlg.getSettings();
         const Settings& oldSettings = SettingsManager::instance().getSettings();
         bool refreshList = settings.showSystemDisks != oldSettings.showSystemDisks
-                || settings.itemFormat != oldSettings.itemFormat;
+                || settings.itemFormat != oldSettings.itemFormat
+                || settings.hideIcon != oldSettings.hideIcon;
         SettingsManager::instance().save(settings);
 
         if (refreshList)

@@ -25,6 +25,7 @@
 struct Settings
 {
     bool showSystemDisks;
+    bool hideIcon;
     bool deviceNotifications;
     bool mountNotifications;
     bool mountAutomaticaly;

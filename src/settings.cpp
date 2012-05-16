@@ -21,6 +21,7 @@
 #include <QSettings>
 
 static const char* SHOW_SYSTEM_DISKS = "ShowSystemDisks";
+static const char* HIDE_ICON = "HideIcon";
 static const char* MOUNT_AUTOMATICALY = "MountAutomaticaly";
 static const char* ITEM_FORMAT = "ItemFormat";
 
@@ -49,6 +50,7 @@ void SettingsManager::readSettings()
 {
     QSettings s("tinymount", "tinymount");
     settings.showSystemDisks = s.value(SHOW_SYSTEM_DISKS, true).toBool();
+    settings.hideIcon = s.value(HIDE_ICON, false).toBool();
     settings.mountAutomaticaly = s.value(MOUNT_AUTOMATICALY, false).toBool();
     settings.itemFormat = s.value(ITEM_FORMAT, DEFAULT_ITEM_FORMAT).toString();
 
@@ -66,8 +68,10 @@ void SettingsManager::save(const Settings& newSettings)
 
     QSettings s("tinymount", "tinymount");
     s.setValue(SHOW_SYSTEM_DISKS, settings.showSystemDisks);
+    s.setValue(HIDE_ICON, settings.hideIcon);
     s.setValue(MOUNT_AUTOMATICALY, settings.mountAutomaticaly);
     s.setValue(ITEM_FORMAT, settings.itemFormat);
+
     s.beginGroup(NOTIFICATIONS);
     s.setValue(NTF_DEVICES, settings.deviceNotifications);
     s.setValue(NTF_MOUNT, settings.mountNotifications);

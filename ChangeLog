@@ -1,3 +1,6 @@
+TinyMount-0.2.4
+  - Add setting to hide the tray icon if there are no connected devices.
+
 TinyMount-0.2.2
 ---------------
   - Add libnotify support.
