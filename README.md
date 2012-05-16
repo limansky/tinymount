@@ -36,14 +36,8 @@ Installation:
 
 ### Gentoo Linux.
 
-If you are Gentoo user please use ebuild file available in downloads section
-on TinyMount github page. The ebuild can be used both for stable versions, and
-as live ebuild (if you set version to 9999).  Currently TinyMount is tested only
-on i686 and x86_64 hosts, but I suppose there should not be any problems on
-other architectures.
-
-If you need help in using custom ebuilds see overlays guide:
-http://www.gentoo.org/proj/en/overlays/userguide.xml
+Since version 0.2.4 tinymount is available in gentoo portage tree. So, can install
+it using `emerge tinymount`.
 
 USE flags:
 
