@@ -1,4 +1,9 @@
+TinyMount-0.2.5
+---------------
+ - Fix flash drives without partition table is not shown.
+
 TinyMount-0.2.4
+---------------
   - Add setting to hide the tray icon if there are no connected devices.
 
 TinyMount-0.2.2

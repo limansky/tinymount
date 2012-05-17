@@ -120,7 +120,9 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << dev.nativePath();
     qDebug() << "\tsize =" << dev.deviceSize();
     qDebug() << "\tisDrive =" << dev.deviceIsDrive();
+    qDebug() << "\tcanDetach =" << dev.driveCanDetach();
     qDebug() << "\tisVolume =" << dev.deviceIsPartition();
+    qDebug() << "\tpartType =" << dev.partitionType();
     qDebug() << "\tisParttable =" << dev.deviceIsPartitionTable();
     qDebug() << "\tisRemovable =" << dev.deviceIsRemovable();
     qDebug() << "\tisMounted =" << dev.deviceIsMounted();
@@ -135,30 +137,25 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     DeviceInfoPtr d;
 
-    if (dev.deviceIsPartition() || dev.deviceIsOpticalDisc())
+    if (dev.idUsage() == "filesystem")
     {
-        if (dev.partitionType() != "0x05"    // extended partition
-            && dev.partitionType() != "0x0f"    // extended Win95 partition
-            && dev.idType() != "swap"        // skip swap
-           )
-        {
-            d = DeviceInfoPtr(new DeviceInfo);
+        qDebug() << "3333333333";
+        d = DeviceInfoPtr(new DeviceInfo);
 
-            d->udisksPath = path.path();
-            const QString& label = dev.idLabel();
-            const QString& fn = dev.deviceFile();
-            d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
-            d->size = dev.deviceSize();
-            d->fileSystem = dev.idType();
-            d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
-                      dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
-                      dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
-                      containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
-                                                                          DeviceInfo::Other;
-            d->isMounted = dev.deviceIsMounted();
-            if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
-            d->isSystem = dev.deviceIsSystemInternal();
-        }
+        d->udisksPath = path.path();
+        const QString& label = dev.idLabel();
+        const QString& fn = dev.deviceFile();
+        d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
+        d->size = dev.deviceSize();
+        d->fileSystem = dev.idType();
+        d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
+                  dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
+                  dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
+                  containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
+                                                                      DeviceInfo::Other;
+        d->isMounted = dev.deviceIsMounted();
+        if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
+        d->isSystem = dev.deviceIsSystemInternal();
     }
 
     return d;
