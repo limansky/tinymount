@@ -139,7 +139,6 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     if (dev.idUsage() == "filesystem")
     {
-        qDebug() << "3333333333";
         d = DeviceInfoPtr(new DeviceInfo);
 
         d->udisksPath = path.path();
