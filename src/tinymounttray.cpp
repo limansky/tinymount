@@ -258,10 +258,15 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 
     if (DiskManager::OK == status)
     {
-        if (SettingsManager::instance().getSettings().mountNotifications)
+        const Settings& settings = SettingsManager::instance().getSettings();
+        if (settings.mountNotifications)
             showNotification(tr("Device is unmounted"),
                              tr("%1 is unmounted successfuly.").arg(device.name),
                              iconNameForType(device.type));
+
+        if (settings.detachRemovable)
+            manager->detachDevice(device.udisksPath);
+
     }
     else
     {

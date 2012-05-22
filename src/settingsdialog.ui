@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>419</width>
-    <height>267</height>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -99,6 +99,22 @@ p, li { white-space: pre-wrap; }
        <widget class="QCheckBox" name="mountNotify">
         <property name="text">
          <string>Notify when device mounted/unmounted</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="unmountGroupBox">
+     <property name="title">
+      <string>Unmount actions</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QCheckBox" name="detach">
+        <property name="text">
+         <string>Detach devices after unmount</string>
         </property>
        </widget>
       </item>

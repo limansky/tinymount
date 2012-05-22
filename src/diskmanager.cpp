@@ -244,7 +244,6 @@ void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
     call->deleteLater();
 }
 
-
 void DiskManager::unmountDevice(const QString& path)
 {
     qDebug() << "unmountDevice:" << path;
@@ -285,4 +284,44 @@ void DiskManager::onUnmountComplete(QDBusPendingCallWatcher *call)
     emit deviceUnmounted(**it, mapErrorName(r.error()));
 
     call->deleteLater();
+}
+
+void DiskManager::detachDevice(const QString &path)
+{
+    qDebug() << "detaching device:" << path;
+
+    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
+
+    if (!dev.isValid())
+    {
+        qDebug() << "Invalid device" << path;
+        return;
+    }
+
+    if (dev.deviceIsDrive())
+    {
+        qDebug() << "Device is drive";
+
+        if (dev.driveCanDetach())
+        {
+            dev.DriveDetach(QStringList());
+        }
+        else
+        {
+            qDebug() << "Device cannot be detached";
+        }
+    }
+    else
+    {
+        qDebug() << "Device is not drive";
+
+        QRegExp regex("^([a-zA-Z/]+)\\d+$");
+
+        if (regex.indexIn(path) != -1)
+        {
+            const QString& ppath = regex.cap(1);
+            qDebug() << "Trying parent device" << ppath;
+            detachDevice(ppath);
+        }
+    }
 }
