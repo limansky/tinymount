@@ -1,6 +1,7 @@
 TinyMount-0.2.5
 ---------------
- - Fix flash drives without partition table is not shown.
+ - Fix: flash drives without partition table is not shown.
+ - Fix: tinymount shall not terminate if tray is not ready yet. 
 
 TinyMount-0.2.4
 ---------------
