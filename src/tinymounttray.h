@@ -24,7 +24,7 @@
 
 class QSystemTrayIcon;
 class QMenu;
-class DeviceInfo;
+struct DeviceInfo;
 class DiskManager;
 class EventHandler;
 
