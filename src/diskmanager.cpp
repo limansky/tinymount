@@ -190,15 +190,27 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
     qDebug() << "Device changed:" << path.path();
 
     DeviceInfoPtr d = deviceForPath(path);
+    DeviceMap::iterator it = deviceCache.find(path.path());
 
     if (0 != d)
     {
-        deviceCache.insert(path.path(), d);
-        emit deviceChanged(*d);
+        if (it != deviceCache.end())
+        {
+            emit deviceChanged(*d);
+        }
+        else
+        {
+            deviceCache.insert(path.path(), d);
+            emit deviceAdded(*d);
+        }
     }
     else
     {
-        deviceCache.remove(path.path());
+        if (it != deviceCache.end()) {
+            DeviceInfoPtr dptr = *it;
+            deviceCache.erase(it);
+            emit deviceRemoved(*dptr);
+        }
     }
 }
 
