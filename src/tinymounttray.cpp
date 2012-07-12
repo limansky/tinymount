@@ -184,7 +184,7 @@ void TinyMountTray::reloadDevices()
     trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
     trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
 
-    if (SettingsManager::instance().getSettings().hideIcon) tray->setVisible(hasDevices);
+    tray->setVisible(!SettingsManager::instance().getSettings().hideIcon || hasDevices);
 }
 
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
