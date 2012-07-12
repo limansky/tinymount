@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QMessageBox>
+#include <QTimer>
 
 namespace {
     QString iconNameForType (DeviceInfo::DeviceType type)
@@ -115,10 +116,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     connect(manager, SIGNAL(deviceUnmounted(DeviceInfo,int)), this, SLOT(onUnmountDone(DeviceInfo,int)));
 
     trayMenu = new QMenu();
-    reloadDevices();
 
     tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
-    tray->show();
     tray->setContextMenu(trayMenu);
 
     connect(tray, SIGNAL(messageClicked()), trayMenu, SLOT(show()));
@@ -126,6 +125,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 #ifdef WITH_LIBNOTIFY
     notifier = new LibNotifier("tinymount");
 #endif
+
+    QTimer::singleShot(0, this, SLOT(reloadDevices()));
 }
 
 TinyMountTray::~TinyMountTray()
