@@ -194,13 +194,13 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
 
     if (0 != d)
     {
+        deviceCache.insert(path.path(), d);
         if (it != deviceCache.end())
         {
             emit deviceChanged(*d);
         }
         else
         {
-            deviceCache.insert(path.path(), d);
             emit deviceAdded(*d);
         }
     }
