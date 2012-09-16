@@ -182,7 +182,7 @@ void TinyMountTray::reloadDevices()
     trayMenu->addSeparator();
     trayMenu->addAction(tr("Settings"), this, SLOT(showSettings()));
     trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
-    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
+    trayMenu->addAction(QIcon::fromTheme("exit"), tr("Quit"), qApp, SLOT(quit()));
 
     tray->setVisible(!SettingsManager::instance().getSettings().hideIcon || hasDevices);
 }
