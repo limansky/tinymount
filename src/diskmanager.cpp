@@ -306,7 +306,7 @@ void DiskManager::detachDevice(const QString &path)
 
     if (!dev.isValid())
     {
-        qDebug() << "Invalid device" << path;
+        qWarning() << "Invalid device" << path;
         return;
     }
 
@@ -316,7 +316,7 @@ void DiskManager::detachDevice(const QString &path)
 
         if (dev.driveCanDetach())
         {
-            dev.DriveDetach(QStringList());
+            dev.DriveEject(QStringList());
         }
         else
         {
