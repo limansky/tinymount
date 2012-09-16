@@ -1,5 +1,6 @@
-TinyMount-0.2.5
+TinyMount-0.2.6
 ---------------
+ - Add ability to detach devices if possible.
  - Fix: flash drives without partition table is not shown.
  - Fix: tinymount shall not terminate if tray is not ready yet. 
 
