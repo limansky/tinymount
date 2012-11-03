@@ -20,6 +20,8 @@ SettingsDialog::SettingsDialog(const Settings& settings, QWidget *parent) :
     useLibNotify->setChecked(settings.useLibnotify);
     ui->notifyGroupBox->layout()->addWidget(useLibNotify);
 #endif
+
+    ui->detach->setChecked(settings.detachRemovable);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -42,6 +44,9 @@ Settings SettingsDialog::getSettings()
 #endif
 
     settings.itemFormat = ui->itemFormat->text();
+
+    settings.detachRemovable = ui->detach->isChecked();
+
     return settings;
 }
 

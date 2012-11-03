@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QMessageBox>
+#include <QTimer>
 
 namespace {
     QString iconNameForType (DeviceInfo::DeviceType type)
@@ -115,10 +116,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     connect(manager, SIGNAL(deviceUnmounted(DeviceInfo,int)), this, SLOT(onUnmountDone(DeviceInfo,int)));
 
     trayMenu = new QMenu();
-    reloadDevices();
 
     tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
-    tray->show();
     tray->setContextMenu(trayMenu);
 
     connect(tray, SIGNAL(messageClicked()), trayMenu, SLOT(show()));
@@ -126,6 +125,8 @@ TinyMountTray::TinyMountTray(QObject *parent) :
 #ifdef WITH_LIBNOTIFY
     notifier = new LibNotifier("tinymount");
 #endif
+
+    QTimer::singleShot(0, this, SLOT(reloadDevices()));
 }
 
 TinyMountTray::~TinyMountTray()
@@ -181,9 +182,9 @@ void TinyMountTray::reloadDevices()
     trayMenu->addSeparator();
     trayMenu->addAction(tr("Settings"), this, SLOT(showSettings()));
     trayMenu->addAction(tr("About..."), this, SLOT(showAbout()));
-    trayMenu->addAction(tr("Quit"), qApp, SLOT(quit()));
+    trayMenu->addAction(QIcon::fromTheme("exit"), tr("Quit"), qApp, SLOT(quit()));
 
-    if (SettingsManager::instance().getSettings().hideIcon) tray->setVisible(hasDevices);
+    tray->setVisible(!SettingsManager::instance().getSettings().hideIcon || hasDevices);
 }
 
 void TinyMountTray::onDeviceAdded(const DeviceInfo &device)
@@ -258,10 +259,15 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 
     if (DiskManager::OK == status)
     {
-        if (SettingsManager::instance().getSettings().mountNotifications)
+        const Settings& settings = SettingsManager::instance().getSettings();
+        if (settings.mountNotifications)
             showNotification(tr("Device is unmounted"),
                              tr("%1 is unmounted successfuly.").arg(device.name),
                              iconNameForType(device.type));
+
+        if (settings.detachRemovable)
+            manager->detachDevice(device.udisksPath);
+
     }
     else
     {

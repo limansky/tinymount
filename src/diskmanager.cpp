@@ -120,7 +120,9 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
     qDebug() << dev.nativePath();
     qDebug() << "\tsize =" << dev.deviceSize();
     qDebug() << "\tisDrive =" << dev.deviceIsDrive();
+    qDebug() << "\tcanDetach =" << dev.driveCanDetach();
     qDebug() << "\tisVolume =" << dev.deviceIsPartition();
+    qDebug() << "\tpartType =" << dev.partitionType();
     qDebug() << "\tisParttable =" << dev.deviceIsPartitionTable();
     qDebug() << "\tisRemovable =" << dev.deviceIsRemovable();
     qDebug() << "\tisMounted =" << dev.deviceIsMounted();
@@ -135,30 +137,24 @@ DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
 
     DeviceInfoPtr d;
 
-    if (dev.deviceIsPartition() || dev.deviceIsOpticalDisc())
+    if (dev.idUsage() == "filesystem")
     {
-        if (dev.partitionType() != "0x05"    // extended partition
-            && dev.partitionType() != "0x0f"    // extended Win95 partition
-            && dev.idType() != "swap"        // skip swap
-           )
-        {
-            d = DeviceInfoPtr(new DeviceInfo);
+        d = DeviceInfoPtr(new DeviceInfo);
 
-            d->udisksPath = path.path();
-            const QString& label = dev.idLabel();
-            const QString& fn = dev.deviceFile();
-            d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
-            d->size = dev.deviceSize();
-            d->fileSystem = dev.idType();
-            d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
-                      dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
-                      dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
-                      containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
-                                                                          DeviceInfo::Other;
-            d->isMounted = dev.deviceIsMounted();
-            if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
-            d->isSystem = dev.deviceIsSystemInternal();
-        }
+        d->udisksPath = path.path();
+        const QString& label = dev.idLabel();
+        const QString& fn = dev.deviceFile();
+        d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
+        d->size = dev.deviceSize();
+        d->fileSystem = dev.idType();
+        d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
+                  dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
+                  dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
+                  containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
+                                                                      DeviceInfo::Other;
+        d->isMounted = dev.deviceIsMounted();
+        if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
+        d->isSystem = dev.deviceIsSystemInternal();
     }
 
     return d;
@@ -194,15 +190,27 @@ void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
     qDebug() << "Device changed:" << path.path();
 
     DeviceInfoPtr d = deviceForPath(path);
+    DeviceMap::iterator it = deviceCache.find(path.path());
 
     if (0 != d)
     {
         deviceCache.insert(path.path(), d);
-        emit deviceChanged(*d);
+        if (it != deviceCache.end())
+        {
+            emit deviceChanged(*d);
+        }
+        else
+        {
+            emit deviceAdded(*d);
+        }
     }
     else
     {
-        deviceCache.remove(path.path());
+        if (it != deviceCache.end()) {
+            DeviceInfoPtr dptr = *it;
+            deviceCache.erase(it);
+            emit deviceRemoved(*dptr);
+        }
     }
 }
 
@@ -248,7 +256,6 @@ void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
     call->deleteLater();
 }
 
-
 void DiskManager::unmountDevice(const QString& path)
 {
     qDebug() << "unmountDevice:" << path;
@@ -289,4 +296,44 @@ void DiskManager::onUnmountComplete(QDBusPendingCallWatcher *call)
     emit deviceUnmounted(**it, mapErrorName(r.error()));
 
     call->deleteLater();
+}
+
+void DiskManager::detachDevice(const QString &path)
+{
+    qDebug() << "detaching device:" << path;
+
+    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
+
+    if (!dev.isValid())
+    {
+        qWarning() << "Invalid device" << path;
+        return;
+    }
+
+    if (dev.deviceIsDrive())
+    {
+        qDebug() << "Device is drive";
+
+        if (dev.driveCanDetach())
+        {
+            dev.DriveEject(QStringList());
+        }
+        else
+        {
+            qDebug() << "Device cannot be detached";
+        }
+    }
+    else
+    {
+        qDebug() << "Device is not drive";
+
+        QRegExp regex("^([a-zA-Z/]+)\\d+$");
+
+        if (regex.indexIn(path) != -1)
+        {
+            const QString& ppath = regex.cap(1);
+            qDebug() << "Trying parent device" << ppath;
+            detachDevice(ppath);
+        }
+    }
 }

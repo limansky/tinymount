@@ -36,14 +36,8 @@ Installation:
 
 ### Gentoo Linux.
 
-If you are Gentoo user please use ebuild file available in downloads section
-on TinyMount github page. The ebuild can be used both for stable versions, and
-as live ebuild (if you set version to 9999).  Currently TinyMount is tested only
-on i686 and x86_64 hosts, but I suppose there should not be any problems on
-other architectures.
-
-If you need help in using custom ebuilds see overlays guide:
-http://www.gentoo.org/proj/en/overlays/userguide.xml
+Since version 0.2.4 tinymount is available in gentoo portage tree. So, can install
+it using `emerge tinymount`.
 
 USE flags:
 
@@ -68,3 +62,22 @@ pass PREFIX parameter to qmake call (e.g. `qmake PREFIX=/bin` to install in /usr
 
 If you want to enable libnotify support run qmake with CONFIG+=with_libnotify
 parameter.
+
+Troubleshooting
+---------------
+
+Tinymount itself doesn't perform any low level operations, it just uses UDisks DBus API
+for disk management.  So if UDisk works fine, everything should work.  You can try to 
+mount/unmount disks using udisks command line tool, e.g:
+
+`udisks --mount /dev/sdb1`
+`udisks --unmount /dev/sdb1`
+
+The common problem is that the ConsoleKit does not work.  You have to ensure that the
+`console-kit-daemon` is running and the ConsoleKit session is started.  Use `ck-list-sessions`
+to list current sessions.  If you using display managers check, if it supports
+ConsoleKit and compiled with ConsoleKit support.  If your display manager does not have
+ConsoleKit support or you are using startx script you should start ConsoleKit session manually.
+For example launch your window mananger from .xinitrc this way:
+
+`exec ck-launch-session openbox-session`

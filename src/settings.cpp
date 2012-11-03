@@ -32,6 +32,8 @@ static const char* NTF_MOUNT = "Mount";
 static const char* USE_LIBNOTIFY = "UseLibNotify";
 #endif
 
+static const char* UNMOUNT = "Unmount";
+static const char* DETACH = "Detach";
 
 static const char* DEFAULT_ITEM_FORMAT = "%name% (%fs%) %size%";
 
@@ -60,6 +62,9 @@ void SettingsManager::readSettings()
 #ifdef WITH_LIBNOTIFY
     settings.useLibnotify = s.value(USE_LIBNOTIFY, true).toBool();
 #endif
+
+    s.beginGroup(UNMOUNT);
+    settings.detachRemovable = s.value(DETACH, true).toBool();
 }
 
 void SettingsManager::save(const Settings& newSettings)
@@ -78,6 +83,9 @@ void SettingsManager::save(const Settings& newSettings)
 #ifdef WITH_LIBNOTIFY
     s.setValue(USE_LIBNOTIFY, settings.useLibnotify);
 #endif
+
+    s.beginGroup(UNMOUNT);
+    s.setValue(DETACH, settings.detachRemovable);
 }
 
 QString SettingsManager::defaultItemFormat()

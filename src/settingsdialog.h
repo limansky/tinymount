@@ -7,7 +7,7 @@ namespace Ui {
     class SettingsDialog;
 }
 
-class Settings;
+struct Settings;
 #ifdef WITH_LIBNOTIFY
 class QCheckBox;
 #endif

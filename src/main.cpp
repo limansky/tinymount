@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 
     if (!QSystemTrayIcon::isSystemTrayAvailable())
     {
-        qFatal("No system tray available");
+        qWarning("No system tray available");
     }
 
     QApplication::setQuitOnLastWindowClosed(false);

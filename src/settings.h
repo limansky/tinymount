@@ -29,6 +29,7 @@ struct Settings
     bool deviceNotifications;
     bool mountNotifications;
     bool mountAutomaticaly;
+    bool detachRemovable;
 #ifdef WITH_LIBNOTIFY
     bool useLibnotify;
 #endif
