@@ -63,8 +63,6 @@ RESOURCES += tinymount.qrc
 
 TRANSLATIONS = translations/tinymount_ru.ts
 
-CONFIG += with_libnotify
-
 with_libnotify {
     DEFINES += WITH_LIBNOTIFY
     CONFIG += link_pkgconfig
