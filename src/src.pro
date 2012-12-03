@@ -61,7 +61,9 @@ SOURCES += \
 
 RESOURCES += tinymount.qrc
 
-TRANSLATIONS = translations/tinymount_ru.ts
+TRANSLATIONS = \
+    translations/tinymount_ru.ts \
+    translations/tinymount_uk.ts
 
 CONFIG += with_libnotify
 
