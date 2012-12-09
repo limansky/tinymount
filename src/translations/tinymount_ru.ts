@@ -28,7 +28,7 @@
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="81"/>
-        <source>User not authorized</source>
+        <source>User is not authorized</source>
         <translation>Пользователь не авторизован</translation>
     </message>
     <message>

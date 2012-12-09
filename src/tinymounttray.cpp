@@ -78,7 +78,7 @@ namespace {
             string = qApp->translate("Errors", "DBus error");
             break;
         case DiskManager::NotAuthorized:
-            string = qApp->translate("Errors", "User not authorized");
+            string = qApp->translate("Errors", "User is not authorized");
             break;
         case DiskManager::Busy:
             string = qApp->translate("Errors", "Device is busy");

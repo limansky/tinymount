@@ -28,7 +28,7 @@
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="81"/>
-        <source>User not authorized</source>
+        <source>User is not authorized</source>
         <translation>Користувач не авторизований</translation>
     </message>
     <message>
@@ -136,12 +136,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../settingsdialog.ui" line="111"/>
         <source>Unmount actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії при розмонтуванні</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="117"/>
         <source>Detach devices after unmount</source>
-        <translation type="unfinished"></translation>
+        <translation>Відключити пристрій</translation>
     </message>
     <message>
         <location filename="../settingsdialog.cpp" line="19"/>
