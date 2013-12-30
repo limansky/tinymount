@@ -1,6 +1,6 @@
 #
 # TinyMount -- simple disks mounter
-# Copyright (C) 2012 Mike Limansky
+# Copyright (C) 2012-2014 Mike Limansky
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.2.6
+VERSION = 0.3.0-alpha
 
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -51,6 +51,20 @@ HEADERS = \
     settings.h \
     settingsdialog.h
 
+use_udisks2 {
+    DEFINES += USE_UDISKS2
+    CONFIG += link_pkgconfig
+    !system(pkg-config --exists udisks2) {
+        error(UDisks2 is not found)
+    }
+    PKGCONFIG += udisks2
+    HEADERS += diskmanagerudisks2.h
+    SOURCES += diskmanagerudisks2.cpp
+} else {
+    HEADERS += diskmanagerudisks1.h
+    SOURCES += diskmanagerudisks1.cpp
+}
+
 HEADERS += \
     udisks/udisksinterface.h \
     udisks/udisksdeviceinterface.h
@@ -73,7 +87,7 @@ with_libnotify {
     !system(pkg-config --exists libnotify) {
         error(libnotify is not found)
     }
-    PKGCONFIG = libnotify
+    PKGCONFIG += libnotify
     HEADERS += libnotifier.h
     SOURCES += libnotifier.cpp
 }
@@ -96,8 +110,3 @@ DEFINES += TINYMOUNT_VERSION=\\\"$${VERSION}\\\" DATADIR=\\\"$${DATADIR}\\\"
 
 FORMS += \
     settingsdialog.ui
-
-
-
-
-

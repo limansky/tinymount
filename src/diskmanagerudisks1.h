@@ -17,56 +17,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DISKMANAGER_H
-#define DISKMANAGER_H
+#ifndef DISKMANAGERUDISKS1_H
+#define DISKMANAGERUDISKS1_H
 
 #include "diskmanagerimpl.h"
-
 #include <QObject>
-#include <QMap>
-#include <tr1/memory>
 
 class UDisksInterface;
 class QDBusObjectPath;
 class QDBusPendingCallWatcher;
 
-class DiskManager : public QObject
+class DiskManagerUDisks1 : public QObject, public DiskManagerImpl
 {
     Q_OBJECT
 public:
-    enum ErrorCode
-    {
-        OK,
-        DBusError,
-        NotAuthorized,
-        Busy,
-        Failed,
-        Cancelled,
-        InvalidRequest,
-        UnknownFileSystem
-    };
+    DiskManagerUDisks1(QObject* parent = 0);
+    virtual ~DiskManagerUDisks1();
 
-    explicit DiskManager(QObject *parent = 0);
+    virtual void mountDevice(const QString& path);
+    virtual void unmountDevice(const QString& path);
 
-    typedef QList<DeviceInfoPtr> Devices;
-    typedef QMap<QString, DeviceInfoPtr> DeviceMap;
-
-    Devices devices() const { return deviceCache.values(); }
-
-    void mountDevice(const QString& path);
-    void unmountDevice(const QString& path);
-    void detachDevice(const QString& path);
-
-    const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
-
-signals:
-    void deviceAdded(const DeviceInfo& device);
-    void deviceRemoved(const DeviceInfo& device);
-    void deviceChanged(const DeviceInfo& device);
-    void deviceMounted(const DeviceInfo& device, const QString& path, int status);
-    void deviceUnmounted(const DeviceInfo& device, int status);
-
-private slots:
+public slots:
     void onDeviceAdded(const QDBusObjectPath& path);
     void onDeviceRemoved(const QDBusObjectPath& path);
     void onDeviceChanged(const QDBusObjectPath& path);
@@ -75,12 +46,7 @@ private slots:
     void onUnmountComplete(QDBusPendingCallWatcher* call);
 
 private:
-    DeviceInfoPtr deviceForPath(const QDBusObjectPath& path);
-
-private:
-    DiskManagerImpl* impl;
     UDisksInterface* udisks;
-    DeviceMap deviceCache;
 };
 
-#endif // DISKMANAGER_H
+#endif // DISKMANAGERUDISKS1_H

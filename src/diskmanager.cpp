@@ -1,6 +1,6 @@
 /*
  * TinyMount -- simple disks mounter
- * Copyright (C) 2012 Mike Limansky
+ * Copyright (C) 2012-2014 Mike Limansky
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,13 @@
  */
 
 #include "diskmanager.h"
+#ifdef USE_UDISKS2
+#include "diskmanagerudisks2.h"
+#else
+#include "diskmanagerudisks1.h"
 #include "udisks/udisksinterface.h"
 #include "udisks/udisksdeviceinterface.h"
+#endif
 
 static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
 static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
@@ -87,6 +92,11 @@ namespace {
 DiskManager::DiskManager(QObject *parent) :
     QObject(parent)
 {
+#ifdef USE_UDISKS2
+    impl = new DiskManagerUDisks2;
+#else
+    impl = new DiskManagerUDisks1;
+#endif
     udisks = new UDisksInterface(UDISKS_SERVICE,
                                  UDISKS_PATH,
                                  QDBusConnection::systemBus(),
