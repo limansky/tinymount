@@ -132,7 +132,9 @@ static const QList<Option> SUPPORTED_OPTIONS = QList<Option>()
 int main(int argc, char** argv)
 {
 #ifdef WITH_LIBNOTIFY
+#if !GLIB_CHECK_VERSION (2, 35, 3)
     g_type_init();
+#endif
 #endif
 
     QApplication app(argc, argv);
