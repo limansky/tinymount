@@ -34,6 +34,7 @@ static const char* USE_LIBNOTIFY = "UseLibNotify";
 
 static const char* UNMOUNT = "Unmount";
 static const char* DETACH = "Detach";
+static const char* FORCE_UNMOUNT = "ForceUnmount";
 
 static const char* DEFAULT_ITEM_FORMAT = "%name% (%fs%) %size%";
 
@@ -65,6 +66,7 @@ void SettingsManager::readSettings()
 
     s.beginGroup(UNMOUNT);
     settings.detachRemovable = s.value(DETACH, true).toBool();
+    settings.forceUnmount = s.value(FORCE_UNMOUNT, false).toBool();
 }
 
 void SettingsManager::save(const Settings& newSettings)
@@ -86,6 +88,7 @@ void SettingsManager::save(const Settings& newSettings)
 
     s.beginGroup(UNMOUNT);
     s.setValue(DETACH, settings.detachRemovable);
+    s.setValue(FORCE_UNMOUNT, settings.forceUnmount);
 }
 
 QString SettingsManager::defaultItemFormat()

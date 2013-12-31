@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>328</height>
+    <width>417</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -115,6 +115,13 @@ p, li { white-space: pre-wrap; }
        <widget class="QCheckBox" name="detach">
         <property name="text">
          <string>Detach devices after unmount</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="useForce">
+        <property name="text">
+         <string>Force unmount if device is busy</string>
         </property>
        </widget>
       </item>

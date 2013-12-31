@@ -75,7 +75,7 @@ public:
     Devices devices() const { return deviceCache.values(); }
 
     void mountDevice(const QString& path);
-    void unmountDevice(const QString& path);
+    void unmountDevice(const QString& path, bool force = false);
     void detachDevice(const QString& path);
 
     const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }

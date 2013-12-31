@@ -257,9 +257,10 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 {
     qDebug() << "Device" << device.name << "is unmounted, status =" << status;
 
+    const Settings& settings = SettingsManager::instance().getSettings();
+
     if (DiskManager::OK == status)
     {
-        const Settings& settings = SettingsManager::instance().getSettings();
         if (settings.mountNotifications)
             showNotification(tr("Device is unmounted"),
                              tr("%1 is unmounted successfuly.").arg(device.name),
@@ -268,6 +269,11 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
         if (settings.detachRemovable)
             manager->detachDevice(device.udisksPath);
 
+    }
+    else if (DiskManager::Busy == status && settings.forceUnmount)
+    {
+        qDebug() << "Device" << device.name << "is busy, trying to use force";
+        manager->unmountDevice(device.udisksPath, true);
     }
     else
     {

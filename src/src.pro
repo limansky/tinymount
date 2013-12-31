@@ -19,7 +19,7 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.2.6
+VERSION = 0.2.7
 
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -64,8 +64,6 @@ RESOURCES += tinymount.qrc
 TRANSLATIONS = \
     translations/tinymount_ru.ts \
     translations/tinymount_uk.ts
-
-CONFIG += with_libnotify
 
 with_libnotify {
     DEFINES += WITH_LIBNOTIFY

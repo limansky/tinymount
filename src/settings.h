@@ -30,6 +30,7 @@ struct Settings
     bool mountNotifications;
     bool mountAutomaticaly;
     bool detachRemovable;
+    bool forceUnmount;
 #ifdef WITH_LIBNOTIFY
     bool useLibnotify;
 #endif
