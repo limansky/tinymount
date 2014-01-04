@@ -1,6 +1,6 @@
 #
 # TinyMount -- simple disks mounter
-# Copyright (C) 2012 Mike Limansky
+# Copyright (C) 2012-2014 Mike Limansky
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ VERSION = 0.2.7
 DEPENDPATH += .
 INCLUDEPATH += .
 
-QMAKE_CXXFLAGS += -Wall -Werror
+QMAKE_CXXFLAGS += -Wall
+QMAKE_CXXFLAGS_DEBUG += -Werror
 
 CONFIG += debug_and_release
 
