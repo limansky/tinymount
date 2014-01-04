@@ -1,0 +1,6 @@
+/files
+/compat
+/*.log
+/*.debhelper
+/stamp-makefile-*
+/*.substvars
