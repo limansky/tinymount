@@ -37,6 +37,7 @@ BINDIR = $$PREFIX/bin
 DATADIR = $$PREFIX/share/tinymount
 
 QT += dbus
+greaterThan(QT_VERSION, 4): QT += widgets
 
 # Input
 SOURCES = \
