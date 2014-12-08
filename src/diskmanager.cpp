@@ -100,13 +100,20 @@ DiskManager::DiskManager(QObject *parent) :
 
     devs.waitForFinished();
 
-    foreach(const QDBusObjectPath& d, devs.value())
+    if (devs.isError())
     {
-        DeviceInfoPtr info = deviceForPath(d);
-        if (0 != info)
+        qDebug() << devs.error();
+    }
+    else
+    {
+        foreach(const QDBusObjectPath& d, devs.value())
         {
-            qDebug() << "Adding device to cache:" << d.path();
-            deviceCache.insert(d.path(), info);
+            DeviceInfoPtr info = deviceForPath(d);
+            if (0 != info)
+            {
+                qDebug() << "Adding device to cache:" << d.path();
+                deviceCache.insert(d.path(), info);
+            }
         }
     }
 }
