@@ -157,7 +157,7 @@ int main(int argc, char** argv)
 
     processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("TinyMountTray", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
 
-    QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
+    QApplication::setWindowIcon(QIcon::fromTheme("tinymount", QIcon(":/icons/tinymount.png")));
     TinyMountTray tmt;
 
     return app.exec();
