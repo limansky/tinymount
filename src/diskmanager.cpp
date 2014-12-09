@@ -85,7 +85,7 @@ namespace {
 }
 
 DiskManager::DiskManager(QObject *parent) :
-    QObject(parent)
+    QObject(parent), ready(false)
 {
     udisks = new UDisksInterface(UDISKS_SERVICE,
                                  UDISKS_PATH,
@@ -102,10 +102,11 @@ DiskManager::DiskManager(QObject *parent) :
 
     if (devs.isError())
     {
-        qDebug() << devs.error();
+        qCritical() << devs.error();
     }
     else
     {
+        ready = true;
         foreach(const QDBusObjectPath& d, devs.value())
         {
             DeviceInfoPtr info = deviceForPath(d);

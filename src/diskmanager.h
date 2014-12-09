@@ -69,6 +69,8 @@ public:
 
     explicit DiskManager(QObject *parent = 0);
 
+    bool isReady() const { return ready; }
+
     typedef QList<DeviceInfoPtr> Devices;
     typedef QMap<QString, DeviceInfoPtr> DeviceMap;
 
@@ -101,6 +103,7 @@ private:
 private:
     UDisksInterface* udisks;
     DeviceMap deviceCache;
+    bool ready;
 };
 
 #endif // DISKMANAGER_H

@@ -138,6 +138,12 @@ TinyMountTray::~TinyMountTray()
 
 void TinyMountTray::reloadDevices()
 {
+    if (!manager->isReady()) {
+        QMessageBox::critical(0, tr("TinyMount statup error"),
+          tr("TinyMount cannot be started. Possible DBus daemon is not running or UDisks is not installed."));
+        QApplication::quit();
+    }
+
     trayMenu->clear();
 
     bool showSystem = SettingsManager::instance().getSettings().showSystemDisks;
@@ -286,7 +292,7 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 void TinyMountTray::showAbout()
 {
     QMessageBox::about(0, tr("TinyMount, version %1").arg(TINYMOUNT_VERSION),
-                          tr("Copyright (c) 2012 Mike Limansky\n\n"
+                          tr("Copyright (c) 2012-2014 Mike Limansky\n\n"
                              "Use and redistribute under terms of the GNU General Public License Version 2."));
 }
 
