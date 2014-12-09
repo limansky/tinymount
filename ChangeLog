@@ -1,6 +1,8 @@
 TinyMount-0.2.8
+ - Force unmount support.
  - Add Ukrainian translation.
  - Allow to build with Qt 5.
+ - Fix: crash if DBus is not ready (thanks Arkadiusz Bokowy).
 
 TinyMount-0.2.6
 ---------------
