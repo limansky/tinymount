@@ -132,7 +132,9 @@ static const QList<Option> SUPPORTED_OPTIONS = QList<Option>()
 int main(int argc, char** argv)
 {
 #ifdef WITH_LIBNOTIFY
+#if !GLIB_CHECK_VERSION (2, 35, 3)
     g_type_init();
+#endif
 #endif
 
     QApplication app(argc, argv);
@@ -155,7 +157,7 @@ int main(int argc, char** argv)
 
     processArgs(SUPPORTED_OPTIONS, "help", qApp->translate("TinyMountTray", "TinyMount, version %1").arg(TINYMOUNT_VERSION));
 
-    QApplication::setWindowIcon(QIcon(":/icons/tinymount.png"));
+    QApplication::setWindowIcon(QIcon::fromTheme("tinymount", QIcon(":/icons/tinymount.png")));
     TinyMountTray tmt;
 
     return app.exec();

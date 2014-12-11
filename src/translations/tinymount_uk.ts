@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>Arguments</name>
     <message>
         <location filename="../main.cpp" line="60"/>
         <source>Parameters:</source>
-        <translation>Параметры:</translation>
+        <translation>Налаштування:</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="83"/>
         <source>Show this information</source>
-        <translation>Вывести эту информацию</translation>
+        <translation>Вивести цю інформацію</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="129"/>
         <source>Set icon theme to be used</source>
-        <translation>Задать тему иконок</translation>
+        <translation>Задати тему іконок</translation>
     </message>
 </context>
 <context>
@@ -24,37 +24,37 @@
     <message>
         <location filename="../tinymounttray.cpp" line="78"/>
         <source>DBus error</source>
-        <translation>Ошибка DBus</translation>
+        <translation>Помилка DBus</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="81"/>
         <source>User is not authorized</source>
-        <translation>Пользователь не авторизован</translation>
+        <translation>Користувач не авторизований</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="84"/>
         <source>Device is busy</source>
-        <translation>Устройство занято</translation>
+        <translation>Пристрій зайнятий</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="87"/>
         <source>Operation is failed</source>
-        <translation>Не получилось</translation>
+        <translation>Щось не так</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="90"/>
         <source>Request is cancelled</source>
-        <translation>Запрос отменен</translation>
+        <translation>Запит був відмінений</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="93"/>
         <source>Unknown filesystem</source>
-        <translation>Неизвестный тип файловой системы</translation>
+        <translation>Невідомий тип файлової системи</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="96"/>
         <source>Unknown error</source>
-        <translation>Неизвестная ошибка</translation>
+        <translation>Невідома помилка</translation>
     </message>
 </context>
 <context>
@@ -62,32 +62,32 @@
     <message>
         <location filename="../settingsdialog.ui" line="14"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="20"/>
         <source>General</source>
-        <translation>Глобальные</translation>
+        <translation>Загальні</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="26"/>
         <source>Show system disks</source>
-        <translation>Показывать системные диски</translation>
+        <translation>Відображати змінні диски</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="33"/>
         <source>Hide icon if there are no devices</source>
-        <translation>Скрывать иконку если нет устройств</translation>
+        <translation>Ховати іконку, якщо нема пристроїв</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="43"/>
         <source>Mount devices automaticaly</source>
-        <translation>Монтировать диски автоматически</translation>
+        <translation>Підключати диски автоматично</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="52"/>
         <source>Item format:</source>
-        <translation>Формат элемента:</translation>
+        <translation>Формат елементу:</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="59"/>
@@ -103,15 +103,15 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%name%&lt;/span&gt; - имя устройства&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%size%&lt;/span&gt; - размер устройства&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%fs%&lt;/span&gt; - тип файловой системы&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%mounted%&lt;/span&gt; - точка монтирования&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%name%&lt;/span&gt; - ім’я пристрою&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%size%&lt;/span&gt; - розмір пристроя&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%fs%&lt;/span&gt; - тип файлової системи&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%mounted%&lt;/span&gt; - точка монтування&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="73"/>
         <source>Reset format to default</source>
-        <translation>Сбросить формат к исходному</translation>
+        <translation>Скинути формат до початкового</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="76"/>
@@ -121,27 +121,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../settingsdialog.ui" line="88"/>
         <source>Notifications</source>
-        <translation>Уведомления</translation>
+        <translation>Сповіщення</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="94"/>
         <source>Notify when device added/removed</source>
-        <translation>Уведомлять о добавлении устройства</translation>
+        <translation>Повідомляти про додавання пристроїв</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="101"/>
         <source>Notify when device mounted/unmounted</source>
-        <translation>Уведомлять о монтировании устройства</translation>
+        <translation>Повідомляти про монтування пристроїв</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="111"/>
         <source>Unmount actions</source>
-        <translation>Действия при отмонтировании</translation>
+        <translation>Дії при розмонтуванні</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="117"/>
         <source>Detach devices after unmount</source>
-        <translation>Отключать устройство</translation>
+        <translation>Відключити пристрій</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="124"/>
@@ -151,7 +151,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../settingsdialog.cpp" line="19"/>
         <source>Use system notifications</source>
-        <translation>Использовать системные уведомления</translation>
+        <translation>Використовувати системні сповіщення</translation>
     </message>
 </context>
 <context>
@@ -160,101 +160,101 @@ p, li { white-space: pre-wrap; }
         <location filename="../main.cpp" line="158"/>
         <location filename="../tinymounttray.cpp" line="294"/>
         <source>TinyMount, version %1</source>
-        <translation>TinyMount, версия %1</translation>
+        <translation>TinyMount, версія %1</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="190"/>
         <source>About...</source>
-        <translation>О программе...</translation>
+        <translation>Про програму...</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="191"/>
         <source>Quit</source>
-        <translation>Выход</translation>
+        <translation>Вийти</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="201"/>
         <source>Device is added</source>
-        <translation>Устройство добавлено</translation>
+        <translation>Пристрій додано</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="202"/>
         <source>Device %1 is added</source>
-        <translation>Добавлено устройство %1</translation>
+        <translation>Додано пристрій %1</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="216"/>
         <source>Device is removed</source>
-        <translation>Устройство удалено</translation>
+        <translation>Пристрій видалено</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="217"/>
         <source>Device %1 is removed</source>
-        <translation>Устройство %1 удалено</translation>
+        <translation>Пристрій %1 видалено</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="250"/>
         <source>Device is mounted</source>
-        <translation>Устройство смонтировано</translation>
+        <translation>Пристрій змонтовано</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="251"/>
         <source>%1 is mounted to %2.</source>
-        <translation>%1 смонтирован в %2.</translation>
+        <translation>%1 змонтовано в %2.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="257"/>
         <source>%1 mounting error. %2.</source>
-        <translation>Не могу смонтировать %1. %2.</translation>
+        <translation>Не вдається змонтувати %1. %2.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="272"/>
         <source>%1 is unmounted successfuly.</source>
-        <translation>%1 успешно отмонтирован.</translation>
+        <translation>%1 вдало відмонтовано.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="287"/>
         <source>Failed to unmount %1. %2.</source>
-        <translation>Не могу отмонтировать %1. %2.</translation>
+        <translation>Не вдається відмонтувати %1. %2.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="295"/>
         <source>Copyright (c) 2012-2014 Mike Limansky
 
 Use and redistribute under terms of the GNU General Public License Version 2.</source>
-        <translation>Copyright (c) 2012-2014 Mike Limansky
+        <translation type="unfinished">Copyright (c) 2012-2014 Mike Limansky
 
-Использование и распространение на условиях GNU General Public License версия 2.</translation>
+Використання та розповсюдження на умовах GNU General Public License версия 2.</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="256"/>
         <source>Mount failed</source>
-        <translation>Ошибка монтирования</translation>
+        <translation>Помилка монтування</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="142"/>
         <source>TinyMount statup error</source>
-        <translation>Ошибка запуска TinyMount</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="143"/>
         <source>TinyMount cannot be started. Possible DBus daemon is not running or UDisks is not installed.</source>
-        <translation>TinyMount не может быть запущен. Возможно, не запущен демон DBus или не установлен сервис UDisks.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="189"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="271"/>
         <source>Device is unmounted</source>
-        <translation>Устройство отмонтировано</translation>
+        <translation>Пристрій відмонтовано</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="286"/>
         <source>Unmount failed</source>
-        <translation>Ошибка размонтирования</translation>
+        <translation>Помилка відмонтування</translation>
     </message>
 </context>
 </TS>

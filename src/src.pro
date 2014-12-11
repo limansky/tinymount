@@ -19,7 +19,7 @@
 
 TEMPLATE = app
 TARGET = tinymount
-VERSION = 0.2.6
+VERSION = 0.2.8
 
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -37,6 +37,7 @@ BINDIR = $$PREFIX/bin
 DATADIR = $$PREFIX/share/tinymount
 
 QT += dbus
+greaterThan(QT_VERSION, 4): QT += widgets
 
 # Input
 SOURCES = \
@@ -62,7 +63,9 @@ SOURCES += \
 
 RESOURCES += tinymount.qrc
 
-TRANSLATIONS = translations/tinymount_ru.ts
+TRANSLATIONS = \
+    translations/tinymount_ru.ts \
+    translations/tinymount_uk.ts
 
 with_libnotify {
     DEFINES += WITH_LIBNOTIFY

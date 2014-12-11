@@ -1,3 +1,11 @@
+tinymount (0.2.8) unstable; urgency=low
+
+  * New version. Force unmount support.
+  * Ukrainian translation.
+  * Fix several bugs.
+
+ -- Mike Limansky <mike.limansky@gmail.com>  Thu, 11 Dec 2014 09:40:51 +0000
+
 tinymount (0.2.6) unstable; urgency=low
 
   * New version. With experimental detaching support.
