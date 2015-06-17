@@ -22,6 +22,7 @@ SettingsDialog::SettingsDialog(const Settings& settings, QWidget *parent) :
 #endif
 
     ui->detach->setChecked(settings.detachRemovable);
+    ui->useForce->setChecked(settings.forceUnmount);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -46,6 +47,7 @@ Settings SettingsDialog::getSettings()
     settings.itemFormat = ui->itemFormat->text();
 
     settings.detachRemovable = ui->detach->isChecked();
+    settings.forceUnmount = ui->useForce->isChecked();
 
     return settings;
 }

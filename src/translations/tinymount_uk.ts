@@ -144,6 +144,11 @@ p, li { white-space: pre-wrap; }
         <translation>Відключити пристрій</translation>
     </message>
     <message>
+        <location filename="../settingsdialog.ui" line="124"/>
+        <source>Force unmount if device is busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../settingsdialog.cpp" line="19"/>
         <source>Use system notifications</source>
         <translation>Використовувати системні сповіщення</translation>
@@ -152,94 +157,104 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TinyMountTray</name>
     <message>
-        <location filename="../main.cpp" line="156"/>
-        <location filename="../tinymounttray.cpp" line="282"/>
+        <location filename="../main.cpp" line="158"/>
+        <location filename="../tinymounttray.cpp" line="294"/>
         <source>TinyMount, version %1</source>
         <translation>TinyMount, версія %1</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="184"/>
+        <location filename="../tinymounttray.cpp" line="190"/>
         <source>About...</source>
         <translation>Про програму...</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="185"/>
+        <location filename="../tinymounttray.cpp" line="191"/>
         <source>Quit</source>
         <translation>Вийти</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="195"/>
+        <location filename="../tinymounttray.cpp" line="201"/>
         <source>Device is added</source>
         <translation>Пристрій додано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="196"/>
+        <location filename="../tinymounttray.cpp" line="202"/>
         <source>Device %1 is added</source>
         <translation>Додано пристрій %1</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="210"/>
+        <location filename="../tinymounttray.cpp" line="216"/>
         <source>Device is removed</source>
         <translation>Пристрій видалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="211"/>
+        <location filename="../tinymounttray.cpp" line="217"/>
         <source>Device %1 is removed</source>
         <translation>Пристрій %1 видалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="244"/>
+        <location filename="../tinymounttray.cpp" line="250"/>
         <source>Device is mounted</source>
         <translation>Пристрій змонтовано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="245"/>
+        <location filename="../tinymounttray.cpp" line="251"/>
         <source>%1 is mounted to %2.</source>
         <translation>%1 змонтовано в %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="251"/>
+        <location filename="../tinymounttray.cpp" line="257"/>
         <source>%1 mounting error. %2.</source>
         <translation>Не вдається змонтувати %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="265"/>
+        <location filename="../tinymounttray.cpp" line="272"/>
         <source>%1 is unmounted successfuly.</source>
         <translation>%1 вдало відмонтовано.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="275"/>
+        <location filename="../tinymounttray.cpp" line="287"/>
         <source>Failed to unmount %1. %2.</source>
         <translation>Не вдається відмонтувати %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="250"/>
+        <location filename="../tinymounttray.cpp" line="295"/>
+        <source>Copyright (c) 2012-2014 Mike Limansky
+
+Use and redistribute under terms of the GNU General Public License Version 2.</source>
+        <translation type="unfinished">Copyright (c) 2012-2014 Mike Limansky
+
+Використання та розповсюдження на умовах GNU General Public License версия 2.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="256"/>
         <source>Mount failed</source>
         <translation>Помилка монтування</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="183"/>
+        <location filename="../tinymounttray.cpp" line="142"/>
+        <source>TinyMount statup error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="143"/>
+        <source>TinyMount cannot be started. Possible DBus daemon is not running or UDisks is not installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="189"/>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="264"/>
+        <location filename="../tinymounttray.cpp" line="271"/>
         <source>Device is unmounted</source>
         <translation>Пристрій відмонтовано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="274"/>
+        <location filename="../tinymounttray.cpp" line="286"/>
         <source>Unmount failed</source>
         <translation>Помилка відмонтування</translation>
-    </message>
-    <message>
-        <location filename="../tinymounttray.cpp" line="283"/>
-        <source>Copyright (c) 2012 Mike Limansky
-
-Use and redistribute under terms of the GNU General Public License Version 2.</source>
-        <translation>Copyright (c) 2012 Mike Limansky
-
-Використання та розповсюдження на умовах GNU General Public License версия 2.</translation>
     </message>
 </context>
 </TS>

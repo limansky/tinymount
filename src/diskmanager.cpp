@@ -90,7 +90,7 @@ namespace {
 }
 
 DiskManager::DiskManager(QObject *parent) :
-    QObject(parent)
+    QObject(parent), ready(false)
 {
 #ifdef USE_UDISKS2
     impl = new DiskManagerUDisks2;
@@ -110,13 +110,21 @@ DiskManager::DiskManager(QObject *parent) :
 
     devs.waitForFinished();
 
-    foreach(const QDBusObjectPath& d, devs.value())
+    if (devs.isError())
     {
-        DeviceInfoPtr info = deviceForPath(d);
-        if (0 != info)
+        qCritical() << devs.error();
+    }
+    else
+    {
+        ready = true;
+        foreach(const QDBusObjectPath& d, devs.value())
         {
-            qDebug() << "Adding device to cache:" << d.path();
-            deviceCache.insert(d.path(), info);
+            DeviceInfoPtr info = deviceForPath(d);
+            if (0 != info)
+            {
+                qDebug() << "Adding device to cache:" << d.path();
+                deviceCache.insert(d.path(), info);
+            }
         }
     }
 }
@@ -266,9 +274,9 @@ void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
     call->deleteLater();
 }
 
-void DiskManager::unmountDevice(const QString& path)
+void DiskManager::unmountDevice(const QString& path, bool force)
 {
-    qDebug() << "unmountDevice:" << path;
+    qDebug() << "unmountDevice:" << path << "force:" << force;
     DeviceMap::iterator it = deviceCache.find(path);
 
     if (it == deviceCache.end())
@@ -279,7 +287,12 @@ void DiskManager::unmountDevice(const QString& path)
 
     UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
 
-    QDBusPendingCall call = dev.FilesystemUnmount(QStringList());
+    QStringList options;
+    if (force)
+    {
+        options << "force";
+    }
+    QDBusPendingCall call = dev.FilesystemUnmount(options);
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
 
     watcher->setProperty(DEVICE_PATH_PROPNAME, path);

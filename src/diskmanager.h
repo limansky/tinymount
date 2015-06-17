@@ -48,13 +48,15 @@ public:
 
     explicit DiskManager(QObject *parent = 0);
 
+    bool isReady() const { return ready; }
+
     typedef QList<DeviceInfoPtr> Devices;
     typedef QMap<QString, DeviceInfoPtr> DeviceMap;
 
     Devices devices() const { return deviceCache.values(); }
 
     void mountDevice(const QString& path);
-    void unmountDevice(const QString& path);
+    void unmountDevice(const QString& path, bool force = false);
     void detachDevice(const QString& path);
 
     const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
@@ -81,6 +83,7 @@ private:
     DiskManagerImpl* impl;
     UDisksInterface* udisks;
     DeviceMap deviceCache;
+    bool ready;
 };
 
 #endif // DISKMANAGER_H

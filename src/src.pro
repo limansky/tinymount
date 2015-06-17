@@ -24,7 +24,8 @@ VERSION = 0.3.0-alpha
 DEPENDPATH += .
 INCLUDEPATH += .
 
-QMAKE_CXXFLAGS += -Wall -Werror
+QMAKE_CXXFLAGS += -Wall
+QMAKE_CXXFLAGS_DEBUG += -Werror
 
 CONFIG += debug_and_release
 
@@ -36,6 +37,7 @@ BINDIR = $$PREFIX/bin
 DATADIR = $$PREFIX/share/tinymount
 
 QT += dbus
+greaterThan(QT_VERSION, 4): QT += widgets
 
 # Input
 SOURCES = \
@@ -78,8 +80,6 @@ RESOURCES += tinymount.qrc
 TRANSLATIONS = \
     translations/tinymount_ru.ts \
     translations/tinymount_uk.ts
-
-CONFIG += with_libnotify
 
 with_libnotify {
     DEFINES += WITH_LIBNOTIFY

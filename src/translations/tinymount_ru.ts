@@ -24,7 +24,7 @@
     <message>
         <location filename="../tinymounttray.cpp" line="78"/>
         <source>DBus error</source>
-        <translation type="unfinished">Ошибка DBus</translation>
+        <translation>Ошибка DBus</translation>
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="81"/>
@@ -144,6 +144,11 @@ p, li { white-space: pre-wrap; }
         <translation>Отключать устройство</translation>
     </message>
     <message>
+        <location filename="../settingsdialog.ui" line="124"/>
+        <source>Force unmount if device is busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../settingsdialog.cpp" line="19"/>
         <source>Use system notifications</source>
         <translation>Использовать системные уведомления</translation>
@@ -152,94 +157,104 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TinyMountTray</name>
     <message>
-        <location filename="../main.cpp" line="156"/>
-        <location filename="../tinymounttray.cpp" line="282"/>
+        <location filename="../main.cpp" line="158"/>
+        <location filename="../tinymounttray.cpp" line="294"/>
         <source>TinyMount, version %1</source>
         <translation>TinyMount, версия %1</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="184"/>
+        <location filename="../tinymounttray.cpp" line="190"/>
         <source>About...</source>
         <translation>О программе...</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="185"/>
+        <location filename="../tinymounttray.cpp" line="191"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="195"/>
+        <location filename="../tinymounttray.cpp" line="201"/>
         <source>Device is added</source>
         <translation>Устройство добавлено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="196"/>
+        <location filename="../tinymounttray.cpp" line="202"/>
         <source>Device %1 is added</source>
         <translation>Добавлено устройство %1</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="210"/>
+        <location filename="../tinymounttray.cpp" line="216"/>
         <source>Device is removed</source>
         <translation>Устройство удалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="211"/>
+        <location filename="../tinymounttray.cpp" line="217"/>
         <source>Device %1 is removed</source>
         <translation>Устройство %1 удалено</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="244"/>
+        <location filename="../tinymounttray.cpp" line="250"/>
         <source>Device is mounted</source>
         <translation>Устройство смонтировано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="245"/>
+        <location filename="../tinymounttray.cpp" line="251"/>
         <source>%1 is mounted to %2.</source>
         <translation>%1 смонтирован в %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="251"/>
+        <location filename="../tinymounttray.cpp" line="257"/>
         <source>%1 mounting error. %2.</source>
         <translation>Не могу смонтировать %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="265"/>
+        <location filename="../tinymounttray.cpp" line="272"/>
         <source>%1 is unmounted successfuly.</source>
         <translation>%1 успешно отмонтирован.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="275"/>
+        <location filename="../tinymounttray.cpp" line="287"/>
         <source>Failed to unmount %1. %2.</source>
         <translation>Не могу отмонтировать %1. %2.</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="250"/>
+        <location filename="../tinymounttray.cpp" line="295"/>
+        <source>Copyright (c) 2012-2014 Mike Limansky
+
+Use and redistribute under terms of the GNU General Public License Version 2.</source>
+        <translation>Copyright (c) 2012-2014 Mike Limansky
+
+Использование и распространение на условиях GNU General Public License версия 2.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="256"/>
         <source>Mount failed</source>
         <translation>Ошибка монтирования</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="183"/>
+        <location filename="../tinymounttray.cpp" line="142"/>
+        <source>TinyMount statup error</source>
+        <translation>Ошибка запуска TinyMount</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="143"/>
+        <source>TinyMount cannot be started. Possible DBus daemon is not running or UDisks is not installed.</source>
+        <translation>TinyMount не может быть запущен. Возможно, не запущен демон DBus или не установлен сервис UDisks.</translation>
+    </message>
+    <message>
+        <location filename="../tinymounttray.cpp" line="189"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="264"/>
+        <location filename="../tinymounttray.cpp" line="271"/>
         <source>Device is unmounted</source>
         <translation>Устройство отмонтировано</translation>
     </message>
     <message>
-        <location filename="../tinymounttray.cpp" line="274"/>
+        <location filename="../tinymounttray.cpp" line="286"/>
         <source>Unmount failed</source>
         <translation>Ошибка размонтирования</translation>
-    </message>
-    <message>
-        <location filename="../tinymounttray.cpp" line="283"/>
-        <source>Copyright (c) 2012 Mike Limansky
-
-Use and redistribute under terms of the GNU General Public License Version 2.</source>
-        <translation>Copyright (c) 2012 Mike Limansky
-
-Использование и распространение на условиях GNU General Public License версия 2.</translation>
     </message>
 </context>
 </TS>
