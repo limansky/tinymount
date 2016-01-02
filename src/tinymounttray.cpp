@@ -292,7 +292,7 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 void TinyMountTray::showAbout()
 {
     QMessageBox::about(0, tr("TinyMount, version %1").arg(TINYMOUNT_VERSION),
-                          tr("Copyright (c) 2012-2014 Mike Limansky\n\n"
+                          tr("Copyright (c) 2012-2016 Mike Limansky\n\n"
                              "Use and redistribute under terms of the GNU General Public License Version 2."));
 }
 

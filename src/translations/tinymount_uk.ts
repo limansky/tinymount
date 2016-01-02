@@ -219,10 +219,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../tinymounttray.cpp" line="295"/>
-        <source>Copyright (c) 2012-2014 Mike Limansky
+        <source>Copyright (c) 2012-2016 Mike Limansky
 
 Use and redistribute under terms of the GNU General Public License Version 2.</source>
-        <translation type="unfinished">Copyright (c) 2012-2014 Mike Limansky
+        <translation>Copyright (c) 2012-2016 Mike Limansky
 
 Використання та розповсюдження на умовах GNU General Public License версия 2.</translation>
     </message>
