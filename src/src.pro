@@ -29,6 +29,8 @@ QMAKE_CXXFLAGS_DEBUG += -Werror
 
 CONFIG += debug_and_release
 
+#CONFIG += use_udisks2
+
 isEmpty(PREFIX) {
     PREFIX = /usr/local
 }
@@ -51,7 +53,8 @@ HEADERS = \
     diskmanager.h \
     tinymounttray.h \
     settings.h \
-    settingsdialog.h
+    settingsdialog.h \
+    common.h
 
 use_udisks2 {
     DEFINES += USE_UDISKS2

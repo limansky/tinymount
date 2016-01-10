@@ -1,6 +1,6 @@
 /*
  * TinyMount -- simple disks mounter
- * Copyright (C) 2012-2014 Mike Limansky
+ * Copyright (C) 2012-2016 Mike Limansky
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,337 +26,64 @@
 #include "udisks/udisksdeviceinterface.h"
 #endif
 
-static const char* UDISKS_SERVICE = "org.freedesktop.UDisks";
-static const char* UDISKS_PATH = "/org/freedesktop/UDisks";
-static const char* DEVICE_PATH_PROPNAME = "DevicePath";
-
-// Uncomment this to get verbose udisks log.
-// #define LOG_DEVICE_INFO
-
-namespace {
-    bool containsFlashTypes(const QStringList& compatibility)
-    {
-        foreach (const QString& c, compatibility)
-        {
-            if (c.startsWith("flash"))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    DiskManager::ErrorCode mapErrorName(const QDBusError& error)
-    {
-        DiskManager::ErrorCode err = DiskManager::OK;
-
-        if (error.isValid())
-        {
-            if (error.type() == QDBusError::Other)
-            {
-                if (error.name() == "org.freedesktop.UDisks.Error.NotAuthorized")
-                {
-                    err = DiskManager::NotAuthorized;
-                }
-                else if (error.name() == "org.freedesktop.UDisks.Error.Busy")
-                {
-                    err = DiskManager::Busy;
-                }
-                else if (error.name() == "org.freedesktop.UDisks.Error.Failed")
-                {
-                    err = DiskManager::Failed;
-                }
-                else if (error.name() == "org.freedesktop.UDisks.Error.Cancelled")
-                {
-                    err = DiskManager::Cancelled;
-                }
-                else if (error.name() == "org.freedesktop.UDisks.Error.FilesystemDriverMissing")
-                {
-                    err = DiskManager::UnknownFileSystem;
-                }
-                else
-                {
-                    err = DiskManager::InvalidRequest;
-                }
-            }
-            else
-            {
-                err = DiskManager::DBusError;
-            }
-        }
-
-        return err;
-    }
-}
+using namespace Tinymount;
 
 DiskManager::DiskManager(QObject *parent) :
-    QObject(parent), ready(false)
+    QObject(parent)
 {
 #ifdef USE_UDISKS2
     impl = new DiskManagerUDisks2;
 #else
-    impl = new DiskManagerUDisks1;
+    impl = new DiskManagerUDisks1(*this);
 #endif
-    udisks = new UDisksInterface(UDISKS_SERVICE,
-                                 UDISKS_PATH,
-                                 QDBusConnection::systemBus(),
-                                 this);
-
-    connect(udisks, SIGNAL(DeviceAdded(QDBusObjectPath)), this, SLOT(onDeviceAdded(QDBusObjectPath)));
-    connect(udisks, SIGNAL(DeviceRemoved(QDBusObjectPath)), this, SLOT(onDeviceRemoved(QDBusObjectPath)));
-    connect(udisks, SIGNAL(DeviceChanged(QDBusObjectPath)), this, SLOT(onDeviceChanged(QDBusObjectPath)));
-
-    QDBusPendingReply<QList<QDBusObjectPath> > devs =  udisks->EnumerateDevices();
-
-    devs.waitForFinished();
-
-    if (devs.isError())
-    {
-        qCritical() << devs.error();
-    }
-    else
-    {
-        ready = true;
-        foreach(const QDBusObjectPath& d, devs.value())
-        {
-            DeviceInfoPtr info = deviceForPath(d);
-            if (0 != info)
-            {
-                qDebug() << "Adding device to cache:" << d.path();
-                deviceCache.insert(d.path(), info);
-            }
-        }
-    }
 }
 
-DeviceInfoPtr DiskManager::deviceForPath(const QDBusObjectPath &path)
+bool DiskManager::isReady() const
 {
-    UDisksDeviceInterface dev(UDISKS_SERVICE, path.path(), QDBusConnection::systemBus());
-
-#ifdef LOG_DEVICE_INFO
-    qDebug() << "DiskManager::deviceForPath" << path.path();
-    qDebug() << dev.nativePath();
-    qDebug() << "\tsize =" << dev.deviceSize();
-    qDebug() << "\tisDrive =" << dev.deviceIsDrive();
-    qDebug() << "\tcanDetach =" << dev.driveCanDetach();
-    qDebug() << "\tisVolume =" << dev.deviceIsPartition();
-    qDebug() << "\tpartType =" << dev.partitionType();
-    qDebug() << "\tisParttable =" << dev.deviceIsPartitionTable();
-    qDebug() << "\tisRemovable =" << dev.deviceIsRemovable();
-    qDebug() << "\tisMounted =" << dev.deviceIsMounted();
-    qDebug() << "\tisOptical =" << dev.deviceIsOpticalDisc();
-    qDebug() << "\tisSysInt =" << dev.deviceIsSystemInternal();
-    qDebug() << "\ttype and usage =" << dev.idType() << dev.idUsage();
-    qDebug() << "\tLabal =" << dev.idLabel();
-    qDebug() << "\tplabel =" << dev.partitionLabel();
-    qDebug() << "\tdpname =" << dev.devicePresentationName() << ", " << dev.devicePresentationIconName();
-    qDebug() << "\tcompatibility" << dev.driveMediaCompatibility();
-#endif
-
-    DeviceInfoPtr d;
-
-    if (dev.idUsage() == "filesystem")
-    {
-        d = DeviceInfoPtr(new DeviceInfo);
-
-        d->udisksPath = path.path();
-        const QString& label = dev.idLabel();
-        const QString& fn = dev.deviceFile();
-        d->name = label.isEmpty() ? fn.mid(fn.lastIndexOf('/') + 1) : label;
-        d->size = dev.deviceSize();
-        d->fileSystem = dev.idType();
-        d->type = dev.deviceIsSystemInternal() ? DeviceInfo::HDD :
-                  dev.deviceIsOpticalDisc()    ? DeviceInfo::CD  :
-                  dev.driveMediaCompatibility().contains("floppy") ? DeviceInfo::Floppy :
-                  containsFlashTypes(dev.driveMediaCompatibility()) ? DeviceInfo::Flash :
-                                                                      DeviceInfo::Other;
-        d->isMounted = dev.deviceIsMounted();
-        if (d->isMounted) d->mountPoint = dev.deviceMountPaths().first();
-        d->isSystem = dev.deviceIsSystemInternal();
-    }
-
-    return d;
+    return impl->isReady();
 }
 
-void DiskManager::onDeviceAdded(const QDBusObjectPath &path)
+DiskManager::Devices DiskManager::devices() const
 {
-    qDebug() << "Device added:" << path.path();
-
-    DeviceInfoPtr d = deviceForPath(path);
-
-    if (0 != d)
-    {
-        deviceCache.insert(path.path(), d);
-        emit deviceAdded(*d);
-    }
+    return impl->devices();
 }
 
-void DiskManager::onDeviceRemoved(const QDBusObjectPath &path)
+void DiskManager::onDeviceAdded(const DeviceInfo &deviceInfo)
 {
-    qDebug() << "Device removed:" << path.path();
-
-    DeviceInfoPtr d = deviceCache.value(path.path());
-    if (0 != d)
-    {
-        deviceCache.remove(path.path());
-        emit deviceRemoved(*d);
-    }
+    emit deviceAdded(deviceInfo);
 }
 
-void DiskManager::onDeviceChanged(const QDBusObjectPath &path)
+void DiskManager::onDeviceRemoved(const DeviceInfo &deviceInfo)
 {
-    qDebug() << "Device changed:" << path.path();
+    emit deviceRemoved(deviceInfo);
+}
 
-    DeviceInfoPtr d = deviceForPath(path);
-    DeviceMap::iterator it = deviceCache.find(path.path());
+void DiskManager::onDeviceMounted(const DeviceInfo& deviceInfo, const QString &path, ErrorCode errorCode)
+{
+    emit deviceMounted(deviceInfo, path, errorCode);
+}
 
-    if (0 != d)
-    {
-        deviceCache.insert(path.path(), d);
-        if (it != deviceCache.end())
-        {
-            emit deviceChanged(*d);
-        }
-        else
-        {
-            emit deviceAdded(*d);
-        }
-    }
-    else
-    {
-        if (it != deviceCache.end()) {
-            DeviceInfoPtr dptr = *it;
-            deviceCache.erase(it);
-            emit deviceRemoved(*dptr);
-        }
-    }
+void DiskManager::onDeviceUnmounted(const DeviceInfo& deviceInfo, ErrorCode errorCode)
+{
+    emit deviceUnmounted(deviceInfo, errorCode);
+}
+
+void DiskManager::onDeviceChanged(const DeviceInfo &deviceInfo)
+{
+    emit deviceChanged(deviceInfo);
 }
 
 void DiskManager::mountDevice(const QString& path)
 {
-    qDebug() << "mountDevice:" << path;
-    DeviceMap::iterator it = deviceCache.find(path);
-
-    if (it == deviceCache.end())
-    {
-        qWarning() << "Unknown device passed. Path = " << path;
-        return;
-    }
-
-    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
-
-    QDBusPendingCall call = dev.FilesystemMount("", QStringList());
-    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
-    watcher->setProperty(DEVICE_PATH_PROPNAME, path);
-    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            this, SLOT(onMountComplete(QDBusPendingCallWatcher*)));
-}
-
-void DiskManager::onMountComplete(QDBusPendingCallWatcher *call)
-{
-    QDBusPendingReply<QString> r = *call;
-
-    QString path = call->property(DEVICE_PATH_PROPNAME).toString();
-    Q_ASSERT(!path.isEmpty());
-
-    DeviceMap::iterator it = deviceCache.find(path);
-
-    if (it == deviceCache.end())
-    {
-        qWarning() << "Unknown device" << path << "is mounted";
-        return;
-    }
-
-    const QString& mountPath = r.isValid() ? r.value() : "";
-
-    emit deviceMounted(**it, mountPath, mapErrorName(r.error()));
-
-    call->deleteLater();
+    impl->mountDevice(path);
 }
 
 void DiskManager::unmountDevice(const QString& path, bool force)
 {
-    qDebug() << "unmountDevice:" << path << "force:" << force;
-    DeviceMap::iterator it = deviceCache.find(path);
-
-    if (it == deviceCache.end())
-    {
-        qWarning() << "Unknown device passed. Path = " << path;
-        return;
-    }
-
-    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
-
-    QStringList options;
-    if (force)
-    {
-        options << "force";
-    }
-    QDBusPendingCall call = dev.FilesystemUnmount(options);
-    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
-
-    watcher->setProperty(DEVICE_PATH_PROPNAME, path);
-
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                     this, SLOT(onUnmountComplete(QDBusPendingCallWatcher*)));
-}
-
-void DiskManager::onUnmountComplete(QDBusPendingCallWatcher *call)
-{
-    QDBusPendingReply<> r = *call;
-
-    QString path = call->property(DEVICE_PATH_PROPNAME).toString();
-    Q_ASSERT(!path.isEmpty());
-
-    DeviceMap::iterator it = deviceCache.find(path);
-
-    if (it == deviceCache.end())
-    {
-        qWarning() << "Unknown device" << path << "is unmounted";
-        return;
-    }
-
-    emit deviceUnmounted(**it, mapErrorName(r.error()));
-
-    call->deleteLater();
+    impl->unmountDevice(path, force);
 }
 
 void DiskManager::detachDevice(const QString &path)
 {
-    qDebug() << "detaching device:" << path;
-
-    UDisksDeviceInterface dev(UDISKS_SERVICE, path, QDBusConnection::systemBus());
-
-    if (!dev.isValid())
-    {
-        qWarning() << "Invalid device" << path;
-        return;
-    }
-
-    if (dev.deviceIsDrive())
-    {
-        qDebug() << "Device is drive";
-
-        if (dev.driveCanDetach())
-        {
-            dev.DriveEject(QStringList());
-        }
-        else
-        {
-            qDebug() << "Device cannot be detached";
-        }
-    }
-    else
-    {
-        qDebug() << "Device is not drive";
-
-        QRegExp regex("^([a-zA-Z/]+)\\d+$");
-
-        if (regex.indexIn(path) != -1)
-        {
-            const QString& ppath = regex.cap(1);
-            qDebug() << "Trying parent device" << ppath;
-            detachDevice(ppath);
-        }
-    }
+    impl->detachDevice(path);
 }

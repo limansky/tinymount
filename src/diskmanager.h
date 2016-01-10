@@ -1,6 +1,6 @@
 /*
  * TinyMount -- simple disks mounter
- * Copyright (C) 2012-2014 Mike Limansky
+ * Copyright (C) 2012-2016 Mike Limansky
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,70 +20,48 @@
 #ifndef DISKMANAGER_H
 #define DISKMANAGER_H
 
+#include "common.h"
 #include "diskmanagerimpl.h"
 
 #include <QObject>
-#include <QMap>
 #include <tr1/memory>
 
-class UDisksInterface;
+class DiskManagerImpl;
 class QDBusObjectPath;
 class QDBusPendingCallWatcher;
 
-class DiskManager : public QObject
+class DiskManager : public QObject, public DiskManagerImplListener
 {
     Q_OBJECT
 public:
-    enum ErrorCode
-    {
-        OK,
-        DBusError,
-        NotAuthorized,
-        Busy,
-        Failed,
-        Cancelled,
-        InvalidRequest,
-        UnknownFileSystem
-    };
-
     explicit DiskManager(QObject *parent = 0);
 
-    bool isReady() const { return ready; }
+    bool isReady() const;
 
-    typedef QList<DeviceInfoPtr> Devices;
-    typedef QMap<QString, DeviceInfoPtr> DeviceMap;
+    typedef QList<Tinymount::DeviceInfoPtr> Devices;
 
-    Devices devices() const { return deviceCache.values(); }
+    Devices devices() const;
 
     void mountDevice(const QString& path);
     void unmountDevice(const QString& path, bool force = false);
     void detachDevice(const QString& path);
 
-    const DeviceInfoPtr deviceByPath(const QString& path) const { return deviceCache.value(path); }
-
 signals:
-    void deviceAdded(const DeviceInfo& device);
-    void deviceRemoved(const DeviceInfo& device);
-    void deviceChanged(const DeviceInfo& device);
-    void deviceMounted(const DeviceInfo& device, const QString& path, int status);
-    void deviceUnmounted(const DeviceInfo& device, int status);
-
-private slots:
-    void onDeviceAdded(const QDBusObjectPath& path);
-    void onDeviceRemoved(const QDBusObjectPath& path);
-    void onDeviceChanged(const QDBusObjectPath& path);
-
-    void onMountComplete(QDBusPendingCallWatcher* call);
-    void onUnmountComplete(QDBusPendingCallWatcher* call);
+    void deviceAdded(const Tinymount::DeviceInfo& device);
+    void deviceRemoved(const Tinymount::DeviceInfo& device);
+    void deviceChanged(const Tinymount::DeviceInfo& device);
+    void deviceMounted(const Tinymount::DeviceInfo& device, const QString& path, int status);
+    void deviceUnmounted(const Tinymount::DeviceInfo& device, int status);
 
 private:
-    DeviceInfoPtr deviceForPath(const QDBusObjectPath& path);
+    virtual void onDeviceAdded(const Tinymount::DeviceInfo& deviceInfo);
+    virtual void onDeviceChanged(const Tinymount::DeviceInfo& deviceInfo);
+    virtual void onDeviceRemoved(const Tinymount::DeviceInfo& deviceInfo);
+    virtual void onDeviceMounted(const Tinymount::DeviceInfo& deviceInfo, const QString& path, Tinymount::ErrorCode errorCode);
+    virtual void onDeviceUnmounted(const Tinymount::DeviceInfo& deviceInfo, Tinymount::ErrorCode errorCode);
 
 private:
     DiskManagerImpl* impl;
-    UDisksInterface* udisks;
-    DeviceMap deviceCache;
-    bool ready;
 };
 
 #endif // DISKMANAGER_H

@@ -1,6 +1,6 @@
 /*
  * TinyMount -- simple disks mounter
- * Copyright (C) 2012-2014 Mike Limansky
+ * Copyright (C) 2012-2016 Mike Limansky
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,46 +20,29 @@
 #ifndef DISKMANAGERIMPL_H
 #define DISKMANAGERIMPL_H
 
+#include "common.h"
+
 #include <QString>
-#include <tr1/memory>
-
-struct DeviceInfo
-{
-    enum DeviceType
-    {
-        HDD,
-        CD,
-        Floppy,
-        Flash,
-        Other
-    };
-
-    QString name;
-    qulonglong size;
-    QString fileSystem;
-    DeviceType type;
-    bool isMounted;
-    QString mountPoint;
-    QString udisksPath;
-    bool isSystem;
-};
-
-typedef std::tr1::shared_ptr<DeviceInfo> DeviceInfoPtr;
 
 class DiskManagerImpl
 {
 public:
     virtual void mountDevice(const QString& path) = 0;
-    virtual void unmountDevice(const QString& path) = 0;
+    virtual void unmountDevice(const QString& path, bool force) = 0;
+    virtual void detachDevice(const QString& path) = 0;
+    virtual bool isReady() const = 0;
+    virtual Tinymount::Devices devices() const = 0;
     virtual ~DiskManagerImpl() {}
 };
 
 class DiskManagerImplListener
 {
 public:
-    virtual void onDeviceAdded(DeviceInfoPtr deviceInfo) = 0;
-    virtual void onDeviceRemoved(DeviceInfoPtr deviceInfo) = 0;
-    virtual void onDeviceChanged(DeviceInfoPtr deviceInfo) = 0;
+    virtual void onDeviceAdded(const Tinymount::DeviceInfo& deviceInfo) = 0;
+    virtual void onDeviceRemoved(const Tinymount::DeviceInfo& deviceInfo) = 0;
+    virtual void onDeviceChanged(const Tinymount::DeviceInfo& deviceInfo) = 0;
+    virtual void onDeviceMounted(const Tinymount::DeviceInfo& deviceInfo, const QString& path, Tinymount::ErrorCode errorCode) = 0;
+    virtual void onDeviceUnmounted(const Tinymount::DeviceInfo& deviceInfo, Tinymount::ErrorCode errorCode) = 0;
 };
 
 #endif // DISKMANAGERIMPL_H

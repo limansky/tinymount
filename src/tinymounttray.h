@@ -24,9 +24,13 @@
 
 class QSystemTrayIcon;
 class QMenu;
-struct DeviceInfo;
 class DiskManager;
 class EventHandler;
+
+namespace Tinymount
+{
+    struct DeviceInfo;
+}
 
 #ifdef WITH_LIBNOTIFY
 class LibNotifier;
@@ -40,8 +44,8 @@ public:
     virtual ~TinyMountTray();
 
 public slots:
-    void onDeviceAdded(const DeviceInfo& device);
-    void onDeviceRemoved(const DeviceInfo& device);
+    void onDeviceAdded(const Tinymount::DeviceInfo& device);
+    void onDeviceRemoved(const Tinymount::DeviceInfo& device);
     void reloadDevices();
     void showAbout();
     void showSettings();
@@ -49,8 +53,8 @@ public slots:
     void onMount();
     void onUnmount();
 
-    void onMountDone(const DeviceInfo& device, const QString& mountPath, int status);
-    void onUnmountDone(const DeviceInfo& device, int status);
+    void onMountDone(const Tinymount::DeviceInfo& device, const QString& mountPath, int status);
+    void onUnmountDone(const Tinymount::DeviceInfo& device, int status);
 
 private:
     void showNotification(const QString& title, const QString &message, const QString &icon);

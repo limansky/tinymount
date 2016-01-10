@@ -1,6 +1,6 @@
 /*
  * TinyMount -- simple disks mounter
- * Copyright (C) 2012-2014 Mike Limansky
+ * Copyright (C) 2012-2016 Mike Limansky
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include "diskmanagerimpl.h"
 #include <QObject>
+#include <QMap>
 
 class UDisksInterface;
 class QDBusObjectPath;
@@ -31,11 +32,18 @@ class DiskManagerUDisks1 : public QObject, public DiskManagerImpl
 {
     Q_OBJECT
 public:
-    DiskManagerUDisks1(QObject* parent = 0);
+    typedef QMap<QString, Tinymount::DeviceInfoPtr> DeviceMap;
+
+    DiskManagerUDisks1(DiskManagerImplListener& listener, QObject* parent = 0);
     virtual ~DiskManagerUDisks1();
 
+    virtual Tinymount::Devices devices() const { return deviceCache.values(); }
+    virtual const Tinymount::DeviceInfoPtr device(const QString& path) const { return deviceCache.value(path); }
+    virtual bool isReady() const;
+
     virtual void mountDevice(const QString& path);
-    virtual void unmountDevice(const QString& path);
+    virtual void unmountDevice(const QString& path, bool force);
+    virtual void detachDevice(const QString& path);
 
 public slots:
     void onDeviceAdded(const QDBusObjectPath& path);
@@ -46,7 +54,13 @@ public slots:
     void onUnmountComplete(QDBusPendingCallWatcher* call);
 
 private:
+    Tinymount::DeviceInfoPtr deviceForPath(const QDBusObjectPath& path);
+
+private:
     UDisksInterface* udisks;
+    DiskManagerImplListener& listener;
+    DeviceMap deviceCache;
+    bool ready;
 };
 
 #endif // DISKMANAGERUDISKS1_H

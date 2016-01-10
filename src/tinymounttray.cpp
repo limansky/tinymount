@@ -34,6 +34,8 @@
 #include <QMessageBox>
 #include <QTimer>
 
+using namespace Tinymount;
+
 namespace {
     QString iconNameForType (DeviceInfo::DeviceType type)
     {
@@ -74,22 +76,22 @@ namespace {
 
         switch (error)
         {
-        case DiskManager::DBusError:
+        case DBusError:
             string = qApp->translate("Errors", "DBus error");
             break;
-        case DiskManager::NotAuthorized:
+        case NotAuthorized:
             string = qApp->translate("Errors", "User is not authorized");
             break;
-        case DiskManager::Busy:
+        case Busy:
             string = qApp->translate("Errors", "Device is busy");
             break;
-        case DiskManager::Failed:
+        case Failed:
             string = qApp->translate("Errors", "Operation is failed");
             break;
-        case DiskManager::Cancelled:
+        case Cancelled:
             string = qApp->translate("Errors", "Request is cancelled");
             break;
-        case DiskManager::UnknownFileSystem:
+        case UnknownFileSystem:
             string = qApp->translate("Errors", "Unknown filesystem");
             break;
         default:
@@ -108,12 +110,14 @@ TinyMountTray::TinyMountTray(QObject *parent) :
     qDebug() << "Creating UI";
 
     manager = new DiskManager(this);
-    connect(manager, SIGNAL(deviceAdded(DeviceInfo)), this, SLOT(onDeviceAdded(DeviceInfo)));
-    connect(manager, SIGNAL(deviceRemoved(DeviceInfo)), this, SLOT(onDeviceRemoved(DeviceInfo)));
-    connect(manager, SIGNAL(deviceChanged(DeviceInfo)), this, SLOT(reloadDevices()));
+    connect(manager, SIGNAL(deviceAdded(Tinymount::DeviceInfo)), this, SLOT(onDeviceAdded(Tinymount::DeviceInfo)));
+    connect(manager, SIGNAL(deviceRemoved(Tinymount::DeviceInfo)), this, SLOT(onDeviceRemoved(Tinymount::DeviceInfo)));
+    connect(manager, SIGNAL(deviceChanged(Tinymount::DeviceInfo)), this, SLOT(reloadDevices()));
 
-    connect(manager, SIGNAL(deviceMounted(DeviceInfo,QString,int)), this, SLOT(onMountDone(DeviceInfo,QString,int)));
-    connect(manager, SIGNAL(deviceUnmounted(DeviceInfo,int)), this, SLOT(onUnmountDone(DeviceInfo,int)));
+    connect(manager, SIGNAL(deviceMounted(Tinymount::DeviceInfo, QString, int)),
+            this, SLOT(onMountDone(Tinymount::DeviceInfo, QString, int)));
+    connect(manager, SIGNAL(deviceUnmounted(Tinymount::DeviceInfo, int)),
+            this, SLOT(onUnmountDone(Tinymount::DeviceInfo, int)));
 
     trayMenu = new QMenu();
 
@@ -244,7 +248,7 @@ void TinyMountTray::onMountDone(const DeviceInfo &device, const QString &mountPa
 {
     qDebug() << "Device" << device.name << "is mounted to" << mountPath << ", status =" << status;
 
-    if (DiskManager::OK == status)
+    if (OK == status)
     {
         if (SettingsManager::instance().getSettings().mountNotifications)
             showNotification(tr("Device is mounted"),
@@ -265,7 +269,7 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
 
     const Settings& settings = SettingsManager::instance().getSettings();
 
-    if (DiskManager::OK == status)
+    if (OK == status)
     {
         if (settings.mountNotifications)
             showNotification(tr("Device is unmounted"),
@@ -276,7 +280,7 @@ void TinyMountTray::onUnmountDone(const DeviceInfo &device, int status)
             manager->detachDevice(device.udisksPath);
 
     }
-    else if (DiskManager::Busy == status && settings.forceUnmount)
+    else if (Busy == status && settings.forceUnmount)
     {
         qDebug() << "Device" << device.name << "is busy, trying to use force";
         manager->unmountDevice(device.udisksPath, true);
